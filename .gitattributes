@@ -1,0 +1,8 @@
+# Tell GitHub Linguist to ignore HTML files when calculating repo language
+*.html linguist-detectable=false
+*.html linguist-vendored=true
+public/*.html linguist-detectable=false
+public/*.html linguist-vendored=true
+
+# Ensure JavaScript is counted as the primary language
+*.js linguist-detectable=true
