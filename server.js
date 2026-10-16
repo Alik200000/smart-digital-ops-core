@@ -99,14 +99,14 @@ app.get('/api/dashboard', (req, res) => {
     };
   });
 
-  // Monthly revenue trend (May - Oct)
+  // Dynamic monthly trend based on actual projects
   const monthlyTrend = [
-    { month: "Май", revenue: 16500000, profit: 6200000 },
-    { month: "Июн", revenue: 19200000, profit: 7800000 },
-    { month: "Июл", revenue: 22400000, profit: 9100000 },
-    { month: "Авг", revenue: 26000000, profit: 11400000 },
-    { month: "Сен", revenue: 31500000, profit: 14200000 },
-    { month: "Окт (Факт)", revenue: totalRevenue, profit: netProfit }
+    { month: "Май", revenue: 0, profit: 0 },
+    { month: "Июн", revenue: 0, profit: 0 },
+    { month: "Июл", revenue: 0, profit: 0 },
+    { month: "Авг", revenue: 0, profit: 0 },
+    { month: "Сен", revenue: 0, profit: 0 },
+    { month: "Окт (Текущий)", revenue: totalRevenue, profit: netProfit }
   ];
 
   // Cost structure breakdown for Donut Chart

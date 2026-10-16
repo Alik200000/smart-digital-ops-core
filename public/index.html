@@ -943,16 +943,16 @@
 
       // Render Monthly Trend Bars
       if (monthlyTrend) {
-        const maxVal = Math.max(...monthlyTrend.map(m => m.revenue));
+        const maxVal = Math.max(...monthlyTrend.map(m => m.revenue)) || 1;
         const barContainer = document.getElementById('monthly-bar-chart');
         barContainer.innerHTML = monthlyTrend.map(m => {
-          const revHeight = Math.round((m.revenue / maxVal) * 120);
-          const profHeight = Math.round((m.profit / maxVal) * 120);
+          const revHeight = maxVal > 1 ? Math.round((m.revenue / maxVal) * 120) : 4;
+          const profHeight = maxVal > 1 ? Math.round((m.profit / maxVal) * 120) : 4;
           return `
             <div class="flex-1 flex flex-col items-center gap-1 group">
               <div class="w-full flex items-end justify-center gap-1 h-32">
-                <div class="w-3.5 bg-indigo-600 rounded-t transition-all duration-300 group-hover:bg-indigo-500" style="height: ${revHeight}px" title="Выручка: ${formatKZT(m.revenue)}"></div>
-                <div class="w-3.5 bg-emerald-500 rounded-t transition-all duration-300 group-hover:bg-emerald-400" style="height: ${profHeight}px" title="Прибыль: ${formatKZT(m.profit)}"></div>
+                <div class="w-3.5 bg-indigo-600 rounded-t transition-all duration-300 group-hover:bg-indigo-500" style="height: ${Math.max(4, revHeight)}px" title="Выручка: ${formatKZT(m.revenue)}"></div>
+                <div class="w-3.5 bg-emerald-500 rounded-t transition-all duration-300 group-hover:bg-emerald-400" style="height: ${Math.max(4, profHeight)}px" title="Прибыль: ${formatKZT(m.profit)}"></div>
               </div>
               <span class="text-[10px] text-slate-500 font-medium truncate">${m.month}</span>
             </div>
@@ -962,21 +962,25 @@
 
       // Render Directions
       const dirContainer = document.getElementById('directions-container');
-      dirContainer.innerHTML = directions.map(d => `
-        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-          <div class="flex justify-between items-center text-xs mb-1">
-            <span class="text-slate-900 font-bold">${d.name} (${d.count})</span>
-            <span class="text-emerald-700 font-bold font-mono bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${d.margin}% маржа</span>
+      if (!directions || directions.length === 0) {
+        dirContainer.innerHTML = `<div class="p-6 text-center text-slate-400 text-xs col-span-full border border-dashed border-slate-200 rounded-xl">Направления отобразятся при появлении проектов</div>`;
+      } else {
+        dirContainer.innerHTML = directions.map(d => `
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <div class="flex justify-between items-center text-xs mb-1">
+              <span class="text-slate-900 font-bold">${d.name} (${d.count})</span>
+              <span class="text-emerald-700 font-bold font-mono bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${d.margin}% маржа</span>
+            </div>
+            <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1">
+              <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.min(100, d.margin)}%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-slate-600">
+              <span>Выручка: ${formatKZT(d.revenue)}</span>
+              <span class="text-slate-900 font-semibold">Прибыль: ${formatKZT(d.profit)}</span>
+            </div>
           </div>
-          <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1">
-            <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.min(100, d.margin)}%"></div>
-          </div>
-          <div class="flex justify-between text-[11px] text-slate-600">
-            <span>Выручка: ${formatKZT(d.revenue)}</span>
-            <span class="text-slate-900 font-semibold">Прибыль: ${formatKZT(d.profit)}</span>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      }
 
       // Render Alerts
       const alertsContainer = document.getElementById('alerts-container');
@@ -1003,6 +1007,10 @@
     // ------------------------------------------------------------------
     function renderClientsTable() {
       const tbody = document.getElementById('clients-table-body');
+      if (!appData.clients || appData.clients.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-400 text-xs">Нет данных о клиентах. Они появятся автоматически при добавлении проектов.</td></tr>`;
+        return;
+      }
       tbody.innerHTML = appData.clients.map(c => `
         <tr class="hover:bg-slate-50 transition">
           <td class="py-3.5">
@@ -1045,7 +1053,10 @@
         if (count) count.innerText = leadsInStage.length;
 
         if (col) {
-          col.innerHTML = leadsInStage.map(l => `
+          if (leadsInStage.length === 0) {
+            col.innerHTML = `<div class="p-4 text-center text-slate-300 text-[11px] border border-dashed border-slate-200 rounded-xl">Лидов нет</div>`;
+          } else {
+            col.innerHTML = leadsInStage.map(l => `
             <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-xs space-y-2">
               <div class="flex items-start justify-between gap-1">
                 <span class="font-bold text-slate-900 text-xs">${l.title}</span>
@@ -1066,6 +1077,7 @@
               </div>
             </div>
           `).join('');
+          }
         }
       });
     }
@@ -1129,6 +1141,11 @@
       const q = (document.getElementById('project-filter-input').value || '').toLowerCase();
       const tbody = document.getElementById('projects-table-body');
       const filtered = appData.projects.filter(p => p.title.toLowerCase().includes(q) || p.client.toLowerCase().includes(q));
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-slate-400 text-xs">Нет проектов в реестре. Нажмите "+ Новый проект" или переведите выигранный лид из CRM!</td></tr>`;
+        return;
+      }
 
       tbody.innerHTML = filtered.map(p => {
         const fin = p.financials || {};
@@ -1325,6 +1342,10 @@
     // ------------------------------------------------------------------
     function renderInvoicesTable() {
       const tbody = document.getElementById('invoices-table-body');
+      if (!appData.invoices || appData.invoices.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs">Нет выставленных счетов. Нажмите "+ Выставить счет".</td></tr>`;
+        return;
+      }
       tbody.innerHTML = appData.invoices.map(inv => `
         <tr class="hover:bg-slate-50 transition">
           <td class="py-3 font-mono font-bold text-slate-900">${inv.number}</td>
@@ -1358,6 +1379,10 @@
     }
 
     function openNewInvoiceModal() {
+      if (!appData.projects || appData.projects.length === 0) {
+        alert("Сначала создайте проект в реестре или сконвертируйте лид из CRM, чтобы выставить к нему счет!");
+        return;
+      }
       const select = document.getElementById('new-inv-project');
       select.innerHTML = appData.projects.map(p => `<option value="${p.id}" data-client="${p.client}">${p.title} (${p.client})</option>`).join('');
       document.getElementById('new-inv-due-date').value = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
