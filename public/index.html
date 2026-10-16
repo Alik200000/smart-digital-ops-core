@@ -84,22 +84,22 @@
       <!-- TABS -->
       <div class="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs overflow-x-auto" id="nav-tabs">
         <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200">
-          📊 Сводный Дашборд
+          Сводный дашборд
         </button>
         <button onclick="switchTab('crm')" id="tab-crm" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
-          🎯 CRM Воронка (Handoff)
+          CRM воронка
         </button>
         <button onclick="switchTab('projects')" id="tab-projects" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
-          📁 Проекты & Задачи
+          Проекты и задачи
         </button>
         <button onclick="switchTab('clients')" id="tab-clients" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1">
-          👥 Клиенты (LTV) <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded font-mono">NEW</span>
+          Клиенты (LTV)
         </button>
         <button onclick="switchTab('invoices')" id="tab-invoices" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
-          💳 Счета & Дебиторка
+          Счета и дебиторка
         </button>
         <button onclick="switchTab('ai-generator')" id="tab-ai-generator" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1">
-          ✨ AI-Генератор КП
+          Генератор КП и смет
         </button>
       </div>
     </div>
@@ -239,7 +239,7 @@
           </div>
 
           <div class="mt-3 text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-            📊 Доля чистой прибыли составляет более 40% благодаря автоматизации рутины Vibe Coding.
+            Контроль чистой прибыли и рентабельности по всем контрактам компании.
           </div>
         </div>
 
@@ -291,9 +291,9 @@
           </div>
 
           <div class="mt-4 p-3.5 rounded-xl bg-indigo-50 border border-indigo-200 text-xs">
-            <span class="font-bold text-indigo-900">💡 Системный инсайт:</span>
+            <span class="font-bold text-indigo-900">Аналитика направления:</span>
             <p class="text-slate-700 text-[11px] mt-1 leading-relaxed">
-              AI-автоматизация имеет наименьший цикл согласований и наивысшую маржинальность благодаря переиспользованию готовых модулей n8n и Supabase.
+              Направление автоматизации демонстрирует оптимальный цикл согласования и повышенную маржинальность за счет модульной архитектуры.
             </p>
           </div>
         </div>
@@ -545,13 +545,13 @@
               </label>
               <div class="flex flex-wrap gap-2 mb-3">
                 <button onclick="setBriefTemplate('chatbot')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
-                  🤖 AI Бот в Telegram
+                  Telegram AI Ассистент
                 </button>
                 <button onclick="setBriefTemplate('n8n')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
-                  ⚡ n8n + AmoCRM + 1С
+                  Интеграция CRM и 1С
                 </button>
                 <button onclick="setBriefTemplate('erp')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
-                  🌐 B2B Портал / ERP
+                  B2B Портал / ERP
                 </button>
               </div>
               <textarea id="ai-brief-input" rows="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 leading-relaxed font-sans"></textarea>
@@ -662,7 +662,7 @@
         <div>
           <label class="block font-semibold text-slate-700 mb-1">Специалист / Роль</label>
           <select id="log-role" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
-            <option value="ai">AI Automation / Vibe Coder (12 000 ₸/ч)</option>
+            <option value="ai">AI & Automation Engineer (12 000 ₸/ч)</option>
             <option value="dev">Backend & Integrator (14 000 ₸/ч)</option>
             <option value="pm">Project Manager (9 000 ₸/ч)</option>
             <option value="qa">UI/UX & QA (8 000 ₸/ч)</option>
@@ -985,7 +985,7 @@
       // Render Alerts
       const alertsContainer = document.getElementById('alerts-container');
       if (leakageAlerts.length === 0) {
-        alertsContainer.innerHTML = `<div class="p-4 rounded-xl bg-emerald-50 text-emerald-800 text-xs border border-emerald-200">✅ Утечек не обнаружено. Все проекты в пределах лимитов сметы!</div>`;
+        alertsContainer.innerHTML = `<div class="p-4 rounded-xl bg-emerald-50 text-emerald-800 text-xs border border-emerald-200">Утечек не обнаружено. Все проекты выполняются в пределах сметы.</div>`;
       } else {
         alertsContainer.innerHTML = leakageAlerts.map(a => `
           <div class="p-3 rounded-xl ${a.type === 'overrun' ? 'bg-rose-50 border border-rose-200' : 'bg-amber-50 border border-amber-200'} flex items-start gap-3">
@@ -1069,10 +1069,10 @@
                 <span class="text-slate-400 font-mono">${l.createdAt}</span>
                 ${s !== 'won' ? `
                   <button onclick="advanceLeadStage('${l.id}', '${s}')" class="px-2 py-0.5 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold border border-indigo-200 transition">
-                    ${s === 'contract' ? '⚡ Handoff (Won)' : 'Далее →'}
+                    ${s === 'contract' ? 'В производство' : 'Далее →'}
                   </button>
                 ` : `
-                  <span class="text-emerald-700 font-bold">✓ В проектах</span>
+                  <span class="text-emerald-700 font-bold">В производстве</span>
                 `}
               </div>
             </div>
@@ -1182,16 +1182,16 @@
             </td>
             <td class="py-3.5 text-right space-x-1">
               <button onclick="openProjectTasksModal('${p.id}')" class="px-2.5 py-1 rounded-md bg-white hover:bg-slate-100 text-slate-800 font-semibold text-xs border border-slate-200 shadow-xs transition" title="Задачи и спринты">
-                📋 Задачи (${doneTasksCount}/${tasksCount})
+                Задачи (${doneTasksCount}/${tasksCount})
               </button>
               <button onclick="openLogTimeModal('${p.id}', '${p.title}')" class="px-2 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs border border-indigo-200 transition" title="Зафиксировать часы">
                 + Часы
               </button>
               <a href="/api/projects/${p.id}/document?type=act" target="_blank" class="px-2 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs border border-emerald-200 transition" title="Акт выполненных работ">
-                📄 Акт
+                Акт
               </a>
-              <button onclick="deleteProject('${p.id}')" class="px-1.5 py-1 text-slate-400 hover:text-rose-600 transition">
-                🗑
+              <button onclick="deleteProject('${p.id}')" class="px-2 py-1 rounded text-slate-400 hover:text-rose-600 transition text-xs font-semibold">
+                Удалить
               </button>
             </td>
           </tr>
@@ -1253,7 +1253,7 @@
       await fetch(`/api/projects/${projectId}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, role, planHours, assignee: role === 'ai' ? 'AI Vibe Coder' : 'Dev Team' })
+        body: JSON.stringify({ title, role, planHours, assignee: role === 'ai' ? 'Инженер автоматизации' : 'Команда разработки' })
       });
 
       document.getElementById('new-task-title').value = '';
@@ -1364,7 +1364,7 @@
           <td class="py-3 text-right">
             ${inv.status !== 'paid' ? `
               <button onclick="payInvoice('${inv.id}')" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition">
-                ✓ Оплачен
+                Подтвердить оплату
               </button>
             ` : `<span class="text-emerald-700 font-medium">Закрыт</span>`}
           </td>
@@ -1471,7 +1471,7 @@
         </div>
 
         <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800 font-medium">
-          ✅ Условия: ${res.terms}
+          Условия: ${res.terms}
         </div>
       `;
     }

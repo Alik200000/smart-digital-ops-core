@@ -10,7 +10,7 @@ const defaultData = {
     currency: "₸",
     defaultOverheadPercent: 15,
     roles: [
-      { id: "ai", name: "AI Automation / Vibe Coder", defaultRate: 12000 },
+      { id: "ai", name: "AI & Automation Engineer", defaultRate: 12000 },
       { id: "dev", name: "Backend & Integrator", defaultRate: 14000 },
       { id: "pm", name: "Project Manager / Analyst", defaultRate: 9000 },
       { id: "qa", name: "UI/UX & QA", defaultRate: 8000 }

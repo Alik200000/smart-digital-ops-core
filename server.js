@@ -390,7 +390,7 @@ app.post('/api/leads/:id/convert-to-project', (req, res) => {
     tasks: [
       { id: "tsk-" + Date.now() + "-1", title: "Системный аудит, согласование API и архитектура", role: "ai", assignee: "AI Lead", planHours: Math.round(estimatedHours * 0.25), factHours: 0, status: "in_progress" },
       { id: "tsk-" + Date.now() + "-2", title: "Разработка ядра автоматизации и интеграций", role: "dev", assignee: "Backend Dev", planHours: Math.round(estimatedHours * 0.40), factHours: 0, status: "todo" },
-      { id: "tsk-" + Date.now() + "-3", title: "Промпт-инжиниринг и отладка бизнес-сценариев", role: "ai", assignee: "Vibe Coder", planHours: Math.round(estimatedHours * 0.20), factHours: 0, status: "todo" },
+      { id: "tsk-" + Date.now() + "-3", title: "Промпт-инжиниринг и отладка бизнес-сценариев", role: "ai", assignee: "AI Automation Dev", planHours: Math.round(estimatedHours * 0.20), factHours: 0, status: "todo" },
       { id: "tsk-" + Date.now() + "-4", title: "Сквозное тестирование и релиз в продакшн", role: "pm", assignee: "PM / QA", planHours: Math.round(estimatedHours * 0.15), factHours: 0, status: "todo" }
     ],
     timelogs: [],
