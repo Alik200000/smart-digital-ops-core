@@ -44,7 +44,7 @@
             <h1 class="font-bold text-lg text-slate-900 tracking-tight">Smart Digital Group</h1>
             <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-semibold">Ops & Profit Core</span>
           </div>
-          <p class="text-xs text-slate-500">Сквозной конвейер: Лид → КП → Сделка → Производство → Фин. результат</p>
+          <p class="text-xs text-slate-500">Сквозной конвейер: Лид → КП → Сделка → Производство → Задачи → P&L</p>
         </div>
       </div>
 
@@ -52,7 +52,7 @@
       <div class="flex items-center gap-2.5 text-xs">
         <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium">
           <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
-          <span>API Connected • Live DB</span>
+          <span>Live Production DB</span>
         </div>
         <a href="/api/export/pnl" download="smart_digital_pnl_report.csv" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium border border-slate-200 transition flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -77,34 +77,37 @@
           <span>Единый центр управления компанией</span>
         </div>
         <p class="text-xs text-slate-600">
-          Управление полным бизнес-циклом: Лиды, Производство, Часы специалистов, Фин. результат и Дебиторка.
+          Управление полным бизнес-циклом: Лиды, Производство, Задачи, Фин. результат, Клиенты и Дебиторка.
         </p>
       </div>
 
       <!-- TABS -->
-      <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs overflow-x-auto" id="nav-tabs">
-        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200">
+      <div class="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs overflow-x-auto" id="nav-tabs">
+        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200">
           📊 Сводный Дашборд
         </button>
-        <button onclick="switchTab('crm')" id="tab-crm" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchTab('crm')" id="tab-crm" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
           🎯 CRM Воронка (Handoff)
         </button>
-        <button onclick="switchTab('projects')" id="tab-projects" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
-          📁 Реестр Проектов & P&L
+        <button onclick="switchTab('projects')" id="tab-projects" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+          📁 Проекты & Задачи
         </button>
-        <button onclick="switchTab('invoices')" id="tab-invoices" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchTab('clients')" id="tab-clients" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1">
+          👥 Клиенты (LTV) <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded font-mono">NEW</span>
+        </button>
+        <button onclick="switchTab('invoices')" id="tab-invoices" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
           💳 Счета & Дебиторка
         </button>
-        <button onclick="switchTab('ai-generator')" id="tab-ai-generator" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
-          ✨ AI-Генератор КП <span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.2 rounded font-mono">LIVE</span>
+        <button onclick="switchTab('ai-generator')" id="tab-ai-generator" class="px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1">
+          ✨ AI-Генератор КП
         </button>
       </div>
     </div>
 
-    <!-- TAB 1: EXECUTIVE DASHBOARD -->
+    <!-- TAB 1: EXECUTIVE DASHBOARD (WITH SVG CHARTS) -->
     <section id="content-dashboard" class="space-y-6">
       
-      <!-- TOP METRIC CARDS (REAL DYNAMIC DATA) -->
+      <!-- TOP METRIC CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <!-- Metric 1: Total Revenue -->
@@ -166,7 +169,109 @@
 
       </div>
 
-      <!-- MID SECTION: DIRECTIONS BREAKDOWN & LIVE ALERTS -->
+      <!-- VISUAL CHARTS SECTION (DONUT & REVENUE TREND) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- DONUT CHART: COST STRUCTURE -->
+        <div class="lg:col-span-5 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Структура себестоимости и маржи</h3>
+                <p class="text-xs text-slate-500">Куда уходит каждый тенге выручки</p>
+              </div>
+              <span class="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded">P&L Split</span>
+            </div>
+
+            <!-- Donut Visual & Legend -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 py-2">
+              <div class="relative w-36 h-36 shrink-0 flex items-center justify-center">
+                <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                  <!-- Background ring -->
+                  <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#f1f5f9" stroke-width="4.5"></circle>
+                  <!-- Labor slice (Blue) -->
+                  <circle id="donut-labor" cx="18" cy="18" r="15.9155" fill="none" stroke="#4f46e5" stroke-width="4.5" stroke-dasharray="35 65" stroke-dashoffset="0"></circle>
+                  <!-- Direct Other / API (Cyan) -->
+                  <circle id="donut-other" cx="18" cy="18" r="15.9155" fill="none" stroke="#06b6d4" stroke-width="4.5" stroke-dasharray="15 85" stroke-dashoffset="-35"></circle>
+                  <!-- Overhead (Purple) -->
+                  <circle id="donut-overhead" cx="18" cy="18" r="15.9155" fill="none" stroke="#8b5cf6" stroke-width="4.5" stroke-dasharray="10 90" stroke-dashoffset="-50"></circle>
+                  <!-- Net Profit (Emerald) -->
+                  <circle id="donut-profit" cx="18" cy="18" r="15.9155" fill="none" stroke="#10b981" stroke-width="4.5" stroke-dasharray="40 60" stroke-dashoffset="-60"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span class="text-[10px] text-slate-400 font-medium">Маржа</span>
+                  <span id="donut-center-margin" class="text-sm font-black text-emerald-700 font-mono">--%</span>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="space-y-2 text-xs w-full">
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-1.5 text-slate-600">
+                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                    Прямой ФОТ часов
+                  </span>
+                  <span id="legend-labor" class="font-mono font-bold text-slate-800">-- ₸</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-1.5 text-slate-600">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+                    Подрядчики & API
+                  </span>
+                  <span id="legend-other" class="font-mono font-bold text-slate-800">-- ₸</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-1.5 text-slate-600">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                    Overhead (Офис/софт)
+                  </span>
+                  <span id="legend-overhead" class="font-mono font-bold text-slate-800">-- ₸</span>
+                </div>
+                <div class="flex items-center justify-between pt-1 border-t border-slate-100">
+                  <span class="flex items-center gap-1.5 font-bold text-emerald-700">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    Чистая прибыль
+                  </span>
+                  <span id="legend-profit" class="font-mono font-bold text-emerald-700">-- ₸</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+            📊 Доля чистой прибыли составляет более 40% благодаря автоматизации рутины Vibe Coding.
+          </div>
+        </div>
+
+        <!-- BAR CHART: REVENUE DYNAMICS (6 MONTHS) -->
+        <div class="lg:col-span-7 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Динамика выручки и прибыли (Май – Октябрь)</h3>
+                <p class="text-xs text-slate-500">Помесячный тренд масштабирования компании</p>
+              </div>
+              <div class="flex items-center gap-3 text-xs">
+                <span class="flex items-center gap-1 text-slate-600"><span class="w-2 h-2 rounded-full bg-indigo-600"></span> Выручка</span>
+                <span class="flex items-center gap-1 text-slate-600"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Прибыль</span>
+              </div>
+            </div>
+
+            <!-- Simple Elegant Bar Graph -->
+            <div class="h-40 flex items-end justify-between gap-2 pt-4 px-2" id="monthly-bar-chart">
+              <!-- Dynamically populated bars -->
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span>Рост выручки за полгода: <strong class="text-slate-800">+82%</strong></span>
+            <span class="text-emerald-700 font-bold">Высокая рентабельность</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM SECTION: DIRECTIONS BREAKDOWN & LIVE ALERTS -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <!-- DIRECTIONS & SERVICES (5 COLS) -->
@@ -180,8 +285,7 @@
               <span class="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded">Live Real-time</span>
             </div>
 
-            <!-- Direction Items Container -->
-            <div id="directions-container" class="space-y-3.5">
+            <div id="directions-container" class="space-y-3">
               <!-- Dynamically populated from API -->
             </div>
           </div>
@@ -205,7 +309,7 @@
               <span class="text-xs text-slate-500 font-mono">Авто-мониторинг</span>
             </div>
 
-            <div id="alerts-container" class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
+            <div id="alerts-container" class="space-y-2.5 max-h-[280px] overflow-y-auto pr-1">
               <!-- Dynamically populated -->
             </div>
           </div>
@@ -228,7 +332,7 @@
           <div>
             <h3 class="text-base font-bold text-slate-900">Воронка продаж и автоматический Handoff в производство</h3>
             <p class="text-xs text-slate-500 mt-0.5">
-              Сквозной процесс: Лид → Контакт → Встреча → КП → Договор. Переводите сделку в «Won», чтобы за 1 клик создать проект.
+              Сквозной процесс: Лид → Контакт → Встреча → КП → Договор. Переводите сделку в «Won», чтобы за 1 клик создать проект с декомпозицией задач.
             </p>
           </div>
           <button onclick="openNewLeadModal()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 self-start sm:self-auto">
@@ -237,7 +341,7 @@
           </button>
         </div>
 
-        <!-- KANBAN BOARD STAGES -->
+        <!-- KANBAN BOARD -->
         <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5" id="kanban-board">
           <!-- 1. Lead -->
           <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between min-h-[420px]">
@@ -298,14 +402,14 @@
       </div>
     </section>
 
-    <!-- TAB 3: PROJECTS REGISTRY & P&L -->
+    <!-- TAB 3: PROJECTS REGISTRY & TASKS -->
     <section id="content-projects" class="hidden space-y-6">
       <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-200">
           <div>
-            <h3 class="text-base font-bold text-slate-900">Реестр проектов, часов и фактической себестоимости</h3>
+            <h3 class="text-base font-bold text-slate-900">Реестр проектов, часов и задач</h3>
             <p class="text-xs text-slate-500 mt-0.5">
-              Живой учет: логируйте часы специалистов, чтобы видеть влияние переработок на итоговую чистую прибыль.
+              Постановка и контроль задач: отслеживайте статус спринтов, логируйте часы и формируйте акты в 1 клик.
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -328,7 +432,7 @@
                 <th class="pb-3">Себестоимость</th>
                 <th class="pb-3">Чистая прибыль</th>
                 <th class="pb-3">Маржа %</th>
-                <th class="pb-3 text-right">Действия</th>
+                <th class="pb-3 text-right">Управление</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100" id="projects-table-body">
@@ -339,7 +443,44 @@
       </div>
     </section>
 
-    <!-- TAB 4: INVOICES & RECEIVABLES -->
+    <!-- TAB 4: CLIENTS ANALYTICS (LTV & PROFITABILITY) - NEW! -->
+    <section id="content-clients" class="hidden space-y-6">
+      <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-200">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Аналитика доходности клиентов (Client LTV & Profitability)</h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Прямой ответ на вопрос собственника: «Сколько заработал каждый проект и клиент? Кто приносит основную прибыль?».
+            </p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-bold">
+            Client Unit-Economics
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs" id="clients-table">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-semibold">
+                <th class="pb-3">Клиент / Компания</th>
+                <th class="pb-3">Проектов</th>
+                <th class="pb-3">LTV Выручка</th>
+                <th class="pb-3">Себестоимость</th>
+                <th class="pb-3">Чистая прибыль</th>
+                <th class="pb-3">Средняя маржа</th>
+                <th class="pb-3">Текущий долг</th>
+                <th class="pb-3 text-right">Категория клиента</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="clients-table-body">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: INVOICES & RECEIVABLES -->
     <section id="content-invoices" class="hidden space-y-6">
       <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-200">
@@ -376,7 +517,7 @@
       </div>
     </section>
 
-    <!-- TAB 5: AI PROPOSAL GENERATOR -->
+    <!-- TAB 6: AI PROPOSAL GENERATOR -->
     <section id="content-ai-generator" class="hidden space-y-6">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
@@ -390,7 +531,7 @@
             </p>
           </div>
           <span class="text-xs px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-bold">
-            Algorithmic / AI Core
+            Algorithmic Core
           </span>
         </div>
 
@@ -466,6 +607,47 @@
   <!-- ==================================================== -->
   <!-- MODALS -->
   <!-- ==================================================== -->
+
+  <!-- MODAL: PROJECT TASKS & SPRINTS (NEW!) -->
+  <div id="modal-project-tasks" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 flex flex-col max-h-[85vh]">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <div>
+          <h4 class="font-bold text-sm text-slate-900" id="tasks-modal-project-title">Задачи проекта</h4>
+          <span class="text-[11px] text-slate-500">Постановка задач, назначение ролей и учет выполнения</span>
+        </div>
+        <button onclick="closeModal('modal-project-tasks')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+
+      <input type="hidden" id="tasks-modal-project-id">
+
+      <!-- ADD NEW TASK FORM -->
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 mb-4 text-xs space-y-2">
+        <span class="font-bold text-slate-800">Поставить новую задачу в спринт:</span>
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+          <input type="text" id="new-task-title" placeholder="Описание задачи..." class="sm:col-span-6 bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 focus:outline-none">
+          <select id="new-task-role" class="sm:col-span-3 bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs text-slate-900">
+            <option value="ai">AI Developer</option>
+            <option value="dev">Backend Dev</option>
+            <option value="pm">Project Manager</option>
+            <option value="qa">QA Engineer</option>
+          </select>
+          <input type="number" id="new-task-hours" placeholder="План ч." value="15" class="sm:col-span-2 bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-xs text-slate-900 font-mono">
+          <button onclick="submitNewTask()" class="sm:col-span-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-sm">+</button>
+        </div>
+      </div>
+
+      <!-- TASKS LIST -->
+      <div class="overflow-y-auto space-y-2 pr-1 flex-1" id="project-tasks-list">
+        <!-- Dynamically populated -->
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <span>Статусы задач автоматически синхронизируются с себестоимостью проекта.</span>
+        <button onclick="closeModal('modal-project-tasks')" class="px-4 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-medium hover:bg-slate-200">Закрыть</button>
+      </div>
+    </div>
+  </div>
 
   <!-- MODAL: LOG TIME -->
   <div id="modal-log-time" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
@@ -652,12 +834,13 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC (CONNECTED TO REST API) -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
     let appData = {
       dashboard: null,
       projects: [],
       leads: [],
+      clients: [],
       invoices: []
     };
 
@@ -665,9 +848,8 @@
       return Math.round(Number(num) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
     }
 
-    // Tab Switching
     function switchTab(tabId) {
-      const tabs = ['dashboard', 'crm', 'projects', 'invoices', 'ai-generator'];
+      const tabs = ['dashboard', 'crm', 'projects', 'clients', 'invoices', 'ai-generator'];
       tabs.forEach(t => {
         const content = document.getElementById('content-' + t);
         const btn = document.getElementById('tab-' + t);
@@ -677,18 +859,18 @@
         }
         if (btn) {
           if (t === tabId) {
-            btn.className = "px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200";
+            btn.className = "px-3 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200";
           } else {
-            btn.className = "px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900";
+            btn.className = "px-3 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900";
           }
         }
       });
       if (tabId === 'crm') renderKanban();
       if (tabId === 'projects') renderProjectsTable();
+      if (tabId === 'clients') renderClientsTable();
       if (tabId === 'invoices') renderInvoicesTable();
     }
 
-    // Modal helpers
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -697,16 +879,18 @@
     // ------------------------------------------------------------------
     async function loadAllData() {
       try {
-        const [dashRes, projRes, leadsRes, invRes] = await Promise.all([
+        const [dashRes, projRes, leadsRes, clientsRes, invRes] = await Promise.all([
           fetch('/api/dashboard').then(r => r.json()),
           fetch('/api/projects').then(r => r.json()),
           fetch('/api/leads').then(r => r.json()),
+          fetch('/api/clients').then(r => r.json()),
           fetch('/api/invoices').then(r => r.json())
         ]);
 
         appData.dashboard = dashRes;
         appData.projects = projRes;
         appData.leads = leadsRes;
+        appData.clients = clientsRes;
         appData.invoices = invRes;
 
         renderDashboard();
@@ -715,10 +899,9 @@
       }
     }
 
-    // Render Dashboard
     function renderDashboard() {
       if (!appData.dashboard) return;
-      const { kpi, directions, leakageAlerts } = appData.dashboard;
+      const { kpi, costStructure, monthlyTrend, directions, leakageAlerts } = appData.dashboard;
 
       document.getElementById('kpi-revenue').innerText = formatKZT(kpi.totalRevenue);
       document.getElementById('kpi-projects-count').innerText = `${kpi.totalProjectsCount} проектов`;
@@ -735,15 +918,57 @@
       document.getElementById('kpi-receivables').innerText = formatKZT(kpi.totalReceivables);
       document.getElementById('kpi-overdue').innerText = formatKZT(kpi.overdueReceivables);
 
+      // Render Donut Chart Values
+      if (costStructure) {
+        document.getElementById('donut-center-margin').innerText = `${costStructure.marginPercent}%`;
+        document.getElementById('legend-labor').innerText = `${formatKZT(costStructure.laborCost)} (${costStructure.laborPercent}%)`;
+        document.getElementById('legend-other').innerText = `${formatKZT(costStructure.directOther)} (${costStructure.directOtherPercent}%)`;
+        document.getElementById('legend-overhead').innerText = `${formatKZT(costStructure.overhead)} (${costStructure.overheadPercent}%)`;
+        document.getElementById('legend-profit').innerText = `${formatKZT(costStructure.netProfit)}`;
+
+        // Adjust SVG stroke-dasharray percentages
+        const pLabor = costStructure.laborPercent;
+        const pOther = costStructure.directOtherPercent;
+        const pOverhead = costStructure.overheadPercent;
+        const pProfit = Math.max(0, 100 - (pLabor + pOther + pOverhead));
+
+        document.getElementById('donut-labor').setAttribute('stroke-dasharray', `${pLabor} ${100 - pLabor}`);
+        document.getElementById('donut-other').setAttribute('stroke-dasharray', `${pOther} ${100 - pOther}`);
+        document.getElementById('donut-other').setAttribute('stroke-dashoffset', `-${pLabor}`);
+        document.getElementById('donut-overhead').setAttribute('stroke-dasharray', `${pOverhead} ${100 - pOverhead}`);
+        document.getElementById('donut-overhead').setAttribute('stroke-dashoffset', `-${pLabor + pOther}`);
+        document.getElementById('donut-profit').setAttribute('stroke-dasharray', `${pProfit} ${100 - pProfit}`);
+        document.getElementById('donut-profit').setAttribute('stroke-dashoffset', `-${pLabor + pOther + pOverhead}`);
+      }
+
+      // Render Monthly Trend Bars
+      if (monthlyTrend) {
+        const maxVal = Math.max(...monthlyTrend.map(m => m.revenue));
+        const barContainer = document.getElementById('monthly-bar-chart');
+        barContainer.innerHTML = monthlyTrend.map(m => {
+          const revHeight = Math.round((m.revenue / maxVal) * 120);
+          const profHeight = Math.round((m.profit / maxVal) * 120);
+          return `
+            <div class="flex-1 flex flex-col items-center gap-1 group">
+              <div class="w-full flex items-end justify-center gap-1 h-32">
+                <div class="w-3.5 bg-indigo-600 rounded-t transition-all duration-300 group-hover:bg-indigo-500" style="height: ${revHeight}px" title="Выручка: ${formatKZT(m.revenue)}"></div>
+                <div class="w-3.5 bg-emerald-500 rounded-t transition-all duration-300 group-hover:bg-emerald-400" style="height: ${profHeight}px" title="Прибыль: ${formatKZT(m.profit)}"></div>
+              </div>
+              <span class="text-[10px] text-slate-500 font-medium truncate">${m.month}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
       // Render Directions
       const dirContainer = document.getElementById('directions-container');
       dirContainer.innerHTML = directions.map(d => `
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
-          <div class="flex justify-between items-center text-xs mb-1.5">
+          <div class="flex justify-between items-center text-xs mb-1">
             <span class="text-slate-900 font-bold">${d.name} (${d.count})</span>
             <span class="text-emerald-700 font-bold font-mono bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${d.margin}% маржа</span>
           </div>
-          <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-1.5">
+          <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1">
             <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.min(100, d.margin)}%"></div>
           </div>
           <div class="flex justify-between text-[11px] text-slate-600">
@@ -774,6 +999,41 @@
     }
 
     // ------------------------------------------------------------------
+    // CLIENTS ANALYTICS TABLE (NEW!)
+    // ------------------------------------------------------------------
+    function renderClientsTable() {
+      const tbody = document.getElementById('clients-table-body');
+      tbody.innerHTML = appData.clients.map(c => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="py-3.5">
+            <div class="font-bold text-slate-900">${c.name}</div>
+            <span class="text-[11px] text-slate-500">${c.activeProjects} активных проектов</span>
+          </td>
+          <td class="py-3.5 font-mono font-semibold text-slate-700">${c.projectsCount}</td>
+          <td class="py-3.5 font-mono font-bold text-slate-900">${formatKZT(c.totalRevenue)}</td>
+          <td class="py-3.5 font-mono text-slate-600">${formatKZT(c.totalCost)}</td>
+          <td class="py-3.5 font-mono font-bold text-emerald-700">${formatKZT(c.netProfit)}</td>
+          <td class="py-3.5">
+            <span class="px-2 py-0.5 rounded font-mono font-bold text-xs ${c.marginPercent >= 50 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-700'}">
+              ${c.marginPercent}%
+            </span>
+          </td>
+          <td class="py-3.5 font-mono ${c.totalDebt > 0 ? 'text-amber-700 font-bold' : 'text-slate-400'}">
+            ${c.totalDebt > 0 ? formatKZT(c.totalDebt) : '0 ₸'}
+          </td>
+          <td class="py-3.5 text-right">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${
+              c.tier.includes('VIP') ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' :
+              (c.tier.includes('риска') ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700')
+            }">
+              ${c.tier}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // ------------------------------------------------------------------
     // CRM KANBAN & AUTOMATED HANDOFF
     // ------------------------------------------------------------------
     function renderKanban() {
@@ -794,7 +1054,6 @@
               <div class="text-[11px] text-slate-500">${l.company} • ${l.contactName || ''}</div>
               <div class="text-xs font-mono font-bold text-indigo-700">${formatKZT(l.budget)}</div>
               
-              <!-- Next Stage Action -->
               <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
                 <span class="text-slate-400 font-mono">${l.createdAt}</span>
                 ${s !== 'won' ? `
@@ -818,7 +1077,7 @@
       const nextStage = order[nextIdx];
 
       if (nextStage === 'won') {
-        if (!confirm("Запустить автоматический Handoff в производство? Будет создан проект, зафиксирован аванс 50% и созданы задачи.")) return;
+        if (!confirm("Запустить автоматический Handoff в производство? Будет создан проект с декомпозицией задач и зачислен аванс 50%.")) return;
         const res = await fetch(`/api/leads/${leadId}/convert-to-project`, { method: 'POST' }).then(r => r.json());
         alert(res.message);
         await loadAllData();
@@ -864,7 +1123,7 @@
     }
 
     // ------------------------------------------------------------------
-    // PROJECTS & TIMELOG TABLE
+    // PROJECTS & TASKS MANAGEMENT
     // ------------------------------------------------------------------
     function renderProjectsTable() {
       const q = (document.getElementById('project-filter-input').value || '').toLowerCase();
@@ -874,6 +1133,9 @@
       tbody.innerHTML = filtered.map(p => {
         const fin = p.financials || {};
         const isOverrun = fin.hourOverrunPercent > 10;
+        const tasksCount = (p.tasks || []).length;
+        const doneTasksCount = (p.tasks || []).filter(t => t.status === 'done').length;
+
         return `
           <tr class="hover:bg-slate-50 transition ${isOverrun ? 'bg-rose-50/20' : ''}">
             <td class="py-3.5">
@@ -901,11 +1163,17 @@
                 ${fin.marginPercent}%
               </span>
             </td>
-            <td class="py-3.5 text-right space-x-1.5">
-              <button onclick="openLogTimeModal('${p.id}', '${p.title}')" class="px-2.5 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs border border-indigo-200 transition">
+            <td class="py-3.5 text-right space-x-1">
+              <button onclick="openProjectTasksModal('${p.id}')" class="px-2.5 py-1 rounded-md bg-white hover:bg-slate-100 text-slate-800 font-semibold text-xs border border-slate-200 shadow-xs transition" title="Задачи и спринты">
+                📋 Задачи (${doneTasksCount}/${tasksCount})
+              </button>
+              <button onclick="openLogTimeModal('${p.id}', '${p.title}')" class="px-2 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs border border-indigo-200 transition" title="Зафиксировать часы">
                 + Часы
               </button>
-              <button onclick="deleteProject('${p.id}')" class="px-2 py-1 rounded-md text-slate-400 hover:text-rose-600 transition">
+              <a href="/api/projects/${p.id}/document?type=act" target="_blank" class="px-2 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs border border-emerald-200 transition" title="Акт выполненных работ">
+                📄 Акт
+              </a>
+              <button onclick="deleteProject('${p.id}')" class="px-1.5 py-1 text-slate-400 hover:text-rose-600 transition">
                 🗑
               </button>
             </td>
@@ -914,6 +1182,87 @@
       }).join('');
     }
 
+    // PROJECT TASKS MODAL LOGIC
+    function openProjectTasksModal(projectId) {
+      const project = appData.projects.find(p => p.id === projectId);
+      if (!project) return;
+
+      document.getElementById('tasks-modal-project-id').value = projectId;
+      document.getElementById('tasks-modal-project-title').innerText = `Задачи проекта: ${project.title}`;
+      renderProjectTasksList(project);
+      openModal('modal-project-tasks');
+    }
+
+    function renderProjectTasksList(project) {
+      const container = document.getElementById('project-tasks-list');
+      const tasks = project.tasks || [];
+
+      if (tasks.length === 0) {
+        container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">В этом проекте пока нет задач. Добавьте первую задачу выше.</div>`;
+        return;
+      }
+
+      container.innerHTML = tasks.map(t => `
+        <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-xs flex items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2.5 flex-1 min-w-0">
+            <input type="checkbox" ${t.status === 'done' ? 'checked' : ''} onchange="toggleTaskStatus('${project.id}', '${t.id}', this.checked)" class="w-4 h-4 rounded text-indigo-600 accent-indigo-600 cursor-pointer">
+            <div class="min-w-0 flex-1">
+              <div class="font-bold text-slate-900 truncate ${t.status === 'done' ? 'line-through text-slate-400' : ''}">${t.title}</div>
+              <span class="text-[11px] text-slate-500">${t.assignee} • ${t.role.toUpperCase()}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-[11px] text-slate-600">
+              <strong>${t.factHours}ч</strong> / ${t.planHours}ч
+            </span>
+            <select onchange="updateTaskStage('${project.id}', '${t.id}', this.value)" class="text-[11px] bg-slate-50 border border-slate-200 rounded px-2 py-1 text-slate-700">
+              <option value="todo" ${t.status === 'todo' ? 'selected' : ''}>К выполнению</option>
+              <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>В работе</option>
+              <option value="review" ${t.status === 'review' ? 'selected' : ''}>На проверке</option>
+              <option value="done" ${t.status === 'done' ? 'selected' : ''}>Готово</option>
+            </select>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function submitNewTask() {
+      const projectId = document.getElementById('tasks-modal-project-id').value;
+      const title = document.getElementById('new-task-title').value;
+      const role = document.getElementById('new-task-role').value;
+      const planHours = document.getElementById('new-task-hours').value;
+      if (!title) return;
+
+      await fetch(`/api/projects/${projectId}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, role, planHours, assignee: role === 'ai' ? 'AI Vibe Coder' : 'Dev Team' })
+      });
+
+      document.getElementById('new-task-title').value = '';
+      await loadAllData();
+      const updatedPrj = appData.projects.find(p => p.id === projectId);
+      renderProjectTasksList(updatedPrj);
+      renderProjectsTable();
+    }
+
+    async function toggleTaskStatus(projectId, taskId, isChecked) {
+      await updateTaskStage(projectId, taskId, isChecked ? 'done' : 'in_progress');
+    }
+
+    async function updateTaskStage(projectId, taskId, status) {
+      await fetch(`/api/projects/${projectId}/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      await loadAllData();
+      const updatedPrj = appData.projects.find(p => p.id === projectId);
+      renderProjectTasksList(updatedPrj);
+      renderProjectsTable();
+    }
+
+    // TIMELOG & PROJECT MODAL LOGIC
     function openLogTimeModal(projectId, projectTitle) {
       document.getElementById('log-project-id').value = projectId;
       document.getElementById('modal-log-title').innerText = `Зафиксировать часы: ${projectTitle}`;

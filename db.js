@@ -3,7 +3,6 @@ const path = require('path');
 
 const DB_FILE = path.join(__dirname, 'data', 'db.json');
 
-// Default initial data for Smart Digital Group
 const defaultData = {
   settings: {
     companyName: "Smart Digital Group",
@@ -23,7 +22,7 @@ const defaultData = {
       company: "Astana Logistics Group",
       contactName: "Ерлан Садыков",
       phone: "+7 701 555 12 34",
-      stage: "kp", // lead, contact, meeting, kp, deal, contract
+      stage: "kp", // lead, contact, meeting, kp, deal, contract, won
       budget: 6800000,
       direction: "ai",
       notes: "Нужен бот в Telegram и WhatsApp с базой знаний и авто-квалификацией",
@@ -71,14 +70,19 @@ const defaultData = {
       id: "prj-1",
       title: "Kaspi B2B AI Assistant",
       client: "FinTech Solutions LLP",
-      direction: "ai", // ai, web, marketing
+      direction: "ai",
       price: 7800000,
       paidAmount: 7800000,
       planHours: 120,
-      hoursBreakdown: { ai: 55, dev: 35, pm: 18, qa: 0 },
-      directOtherCosts: 450000, // API, servers, subcontracts
+      directOtherCosts: 450000,
       overheadPercent: 15,
-      status: "active", // active, completed, on_hold
+      status: "active",
+      tasks: [
+        { id: "tsk-101", title: "Архитектура RAG и подключение базы знаний", role: "ai", assignee: "Алихан (AI Dev)", planHours: 35, factHours: 35, status: "done" },
+        { id: "tsk-102", title: "Разработка API-коннектора с Kaspi Pay", role: "dev", assignee: "Даурен (Backend)", planHours: 35, factHours: 35, status: "done" },
+        { id: "tsk-103", title: "Промпт-инжиниринг и отладка диалогов", role: "ai", assignee: "Алихан (AI Dev)", planHours: 25, factHours: 20, status: "done" },
+        { id: "tsk-104", title: "Сквозное тестирование сценариев и сдача", role: "pm", assignee: "Мадина (PM)", planHours: 25, factHours: 18, status: "done" }
+      ],
       timelogs: [
         { date: "2026-10-02", role: "ai", hours: 55, rate: 12000, note: "Промпт-инжиниринг и RAG" },
         { date: "2026-10-05", role: "dev", hours: 35, rate: 14000, note: "Интеграция API Kaspi" },
@@ -93,10 +97,16 @@ const defaultData = {
       price: 11200000,
       paidAmount: 9100000,
       planHours: 180,
-      hoursBreakdown: { ai: 40, dev: 110, pm: 44, qa: 40 },
       directOtherCosts: 950000,
       overheadPercent: 15,
       status: "active",
+      tasks: [
+        { id: "tsk-201", title: "Каталог товаров и фильтрация на Next.js", role: "dev", assignee: "Руслан (Frontend)", planHours: 50, factHours: 65, status: "done" },
+        { id: "tsk-202", title: "Интеграция платежного шлюза и доставки", role: "dev", assignee: "Даурен (Backend)", planHours: 45, factHours: 45, status: "done" },
+        { id: "tsk-203", title: "AI-рекомендации товаров (Коллаборативная фильтрация)", role: "ai", assignee: "Алихан (AI Dev)", planHours: 35, factHours: 40, status: "done" },
+        { id: "tsk-204", title: "Непредвиденные доработки чекаута (Scope Creep)", role: "dev", assignee: "Даурен (Backend)", planHours: 20, factHours: 44, status: "in_progress" },
+        { id: "tsk-205", title: "Финальное нагрузочное QA-тестирование", role: "qa", assignee: "Ольга (QA)", planHours: 30, factHours: 40, status: "review" }
+      ],
       timelogs: [
         { date: "2026-09-20", role: "dev", hours: 110, rate: 14000, note: "Сложная архитектура каталога" },
         { date: "2026-09-25", role: "ai", hours: 40, rate: 12000, note: "AI-рекомендации товаров" },
@@ -112,10 +122,15 @@ const defaultData = {
       price: 5500000,
       paidAmount: 2750000,
       planHours: 90,
-      hoursBreakdown: { ai: 20, dev: 40, pm: 14, qa: 10 },
       directOtherCosts: 320000,
       overheadPercent: 15,
       status: "active",
+      tasks: [
+        { id: "tsk-301", title: "База данных сотрудников и табель на Supabase", role: "dev", assignee: "Даурен (Backend)", planHours: 30, factHours: 40, status: "done" },
+        { id: "tsk-302", title: "AI-парсинг резюме и интеграция с HeadHunter", role: "ai", assignee: "Алихан (AI Dev)", planHours: 25, factHours: 20, status: "done" },
+        { id: "tsk-303", title: "Модуль расчета бонусов и больничных", role: "pm", assignee: "Мадина (PM)", planHours: 20, factHours: 14, status: "in_progress" },
+        { id: "tsk-304", title: "Интерфейс самообслуживания сотрудников", role: "qa", assignee: "Ольга (QA)", planHours: 15, factHours: 10, status: "todo" }
+      ],
       timelogs: [
         { date: "2026-10-01", role: "dev", hours: 40, rate: 14000, note: "Backend табеля и расчет зарплат" },
         { date: "2026-10-04", role: "ai", hours: 20, rate: 12000, note: "Парсинг резюме через AI" },
@@ -131,10 +146,14 @@ const defaultData = {
       price: 3200000,
       paidAmount: 3200000,
       planHours: 45,
-      hoursBreakdown: { ai: 25, dev: 8, pm: 5, qa: 0 },
       directOtherCosts: 180000,
       overheadPercent: 15,
       status: "completed",
+      tasks: [
+        { id: "tsk-401", title: "Промпт для скоринга платежеспособности клиента", role: "ai", assignee: "Алихан (AI Dev)", planHours: 20, factHours: 25, status: "done" },
+        { id: "tsk-402", title: "Webhook интеграция с AmoCRM", role: "dev", assignee: "Даурен (Backend)", planHours: 15, factHours: 8, status: "done" },
+        { id: "tsk-403", title: "Сдача и обучение риелторов", role: "pm", assignee: "Мадина (PM)", planHours: 10, factHours: 5, status: "done" }
+      ],
       timelogs: [
         { date: "2026-09-15", role: "ai", hours: 25, rate: 12000, note: "Разработка скоринговой модели" },
         { date: "2026-09-18", role: "dev", hours: 8, rate: 14000, note: "Webhook в AmoCRM" },
@@ -148,7 +167,7 @@ const defaultData = {
       projectId: "prj-1",
       number: "СЧ-101",
       amount: 7800000,
-      status: "paid", // paid, pending, overdue
+      status: "paid",
       dueDate: "2026-10-05",
       paidDate: "2026-10-04",
       client: "FinTech Solutions LLP"
@@ -210,7 +229,14 @@ function getDb() {
   ensureDbExists();
   try {
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    // Ensure all projects have tasks array
+    if (data.projects) {
+      data.projects.forEach(p => {
+        if (!p.tasks) p.tasks = [];
+      });
+    }
+    return data;
   } catch (err) {
     console.error("Error reading database, restoring defaults:", err);
     saveDb(defaultData);
@@ -223,7 +249,6 @@ function saveDb(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// Financial calculation helper for projects
 function calculateProjectFinancials(p) {
   let totalHours = 0;
   let laborCost = 0;
@@ -262,8 +287,50 @@ function calculateProjectFinancials(p) {
   };
 }
 
+// Client LTV & Profitability Aggregator
+function calculateClientAnalytics(db) {
+  const clientsMap = {};
+
+  db.projects.forEach(p => {
+    const clientName = p.client || "Неизвестный клиент";
+    if (!clientsMap[clientName]) {
+      clientsMap[clientName] = {
+        name: clientName,
+        projectsCount: 0,
+        totalRevenue: 0,
+        totalCost: 0,
+        netProfit: 0,
+        totalDebt: 0,
+        activeProjects: 0
+      };
+    }
+
+    const fin = calculateProjectFinancials(p);
+    clientsMap[clientName].projectsCount += 1;
+    clientsMap[clientName].totalRevenue += Number(p.price) || 0;
+    clientsMap[clientName].totalCost += fin.totalCost;
+    clientsMap[clientName].netProfit += fin.netProfit;
+    clientsMap[clientName].totalDebt += fin.debt;
+    if (p.status === 'active') clientsMap[clientName].activeProjects += 1;
+  });
+
+  return Object.values(clientsMap).map(c => {
+    const margin = c.totalRevenue > 0 ? Number(((c.netProfit / c.totalRevenue) * 100).toFixed(1)) : 0;
+    let tier = "Стандарт";
+    if (margin >= 50 && c.totalDebt === 0) tier = "VIP / Золотой";
+    else if (c.totalDebt > 1000000) tier = "Зона риска";
+
+    return {
+      ...c,
+      marginPercent: margin,
+      tier
+    };
+  }).sort((a, b) => b.netProfit - a.netProfit);
+}
+
 module.exports = {
   getDb,
   saveDb,
-  calculateProjectFinancials
+  calculateProjectFinancials,
+  calculateClientAnalytics
 };

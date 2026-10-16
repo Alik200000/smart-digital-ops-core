@@ -116,6 +116,26 @@
           "rate": 9000,
           "note": "Тестирование и сдача спринта"
         }
+      ],
+      "tasks": [
+        {
+          "id": "tsk-0-1",
+          "title": "Системный аудит и схема интеграции",
+          "role": "ai",
+          "assignee": "AI Dev",
+          "planHours": 20,
+          "factHours": 15,
+          "status": "done"
+        },
+        {
+          "id": "tsk-0-2",
+          "title": "Настройка API коннекторов и логики",
+          "role": "dev",
+          "assignee": "Backend",
+          "planHours": 30,
+          "factHours": 35,
+          "status": "in_progress"
+        }
       ]
     },
     {
@@ -163,6 +183,26 @@
           "hours": 40,
           "rate": 8000,
           "note": "Нагрузочное тестирование"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "tsk-1-1",
+          "title": "Системный аудит и схема интеграции",
+          "role": "ai",
+          "assignee": "AI Dev",
+          "planHours": 20,
+          "factHours": 15,
+          "status": "done"
+        },
+        {
+          "id": "tsk-1-2",
+          "title": "Настройка API коннекторов и логики",
+          "role": "dev",
+          "assignee": "Backend",
+          "planHours": 30,
+          "factHours": 35,
+          "status": "in_progress"
         }
       ]
     },
@@ -212,6 +252,26 @@
           "rate": 8000,
           "note": "Проверка безопасности"
         }
+      ],
+      "tasks": [
+        {
+          "id": "tsk-2-1",
+          "title": "Системный аудит и схема интеграции",
+          "role": "ai",
+          "assignee": "AI Dev",
+          "planHours": 20,
+          "factHours": 15,
+          "status": "done"
+        },
+        {
+          "id": "tsk-2-2",
+          "title": "Настройка API коннекторов и логики",
+          "role": "dev",
+          "assignee": "Backend",
+          "planHours": 30,
+          "factHours": 35,
+          "status": "in_progress"
+        }
       ]
     },
     {
@@ -252,6 +312,26 @@
           "hours": 5,
           "rate": 9000,
           "note": "Сдача проекта клиенту"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "tsk-3-1",
+          "title": "Системный аудит и схема интеграции",
+          "role": "ai",
+          "assignee": "AI Dev",
+          "planHours": 20,
+          "factHours": 15,
+          "status": "done"
+        },
+        {
+          "id": "tsk-3-2",
+          "title": "Настройка API коннекторов и логики",
+          "role": "dev",
+          "assignee": "Backend",
+          "planHours": 30,
+          "factHours": 35,
+          "status": "in_progress"
         }
       ]
     }
