@@ -5,7 +5,7 @@
 🌐 **Живое демо (Production Live):** [https://smart-digital-ops-core.onrender.com](https://smart-digital-ops-core.onrender.com)  
 📂 **GitHub репозиторий:** [https://github.com/Alik200000/smart-digital-ops-core](https://github.com/Alik200000/smart-digital-ops-core)
 
-Разработано для позиции **Vibe Coder / AI Automation Developer**.
+Разработано для позиции **AI Automation Developer / Systems Architect**.
 
 ---
 
@@ -21,7 +21,7 @@
      - Фиксирует плановый бюджет и лимиты часов команды.
      - Создает счет на аванс 50% и начисляет предоплату в кассу.
 3. **Учет работы команды и фактической себестоимости:**
-   - Логирование рабочих часов специалистов по внутренним ставкам (AI Vibe Coder — 12 000 ₸/ч, Backend — 14 000 ₸/ч, PM — 9 000 ₸/ч, QA — 8 000 ₸/ч).
+   - Логирование рабочих часов специалистов по внутренним ставкам (AI Инженер — 12 000 ₸/ч, Backend — 14 000 ₸/ч, PM — 9 000 ₸/ч, QA — 8 000 ₸/ч).
    - Автоматический учет прямых расходов (серверы, токены OpenAI, подрядчики) и накладных расходов (Overhead 15%).
 4. **Контроль дебиторской задолженности и кассовых разрывов:**
    - Реестр счетов, статусы оплат, учет просроченной дебиторки (>14 дней).
@@ -46,7 +46,7 @@ npm start
 
 ---
 
-## 🛠 Технологический стек (Vibe Coding / Low-Code Architecture)
+## 🛠 Технологический стек (AI & Low-Code Systems Architecture)
 
 - **Backend:** Node.js, Express, REST API.
 - **База данных:** JSON-хранилище `data/db.json` с мгновенной реактивностью и персистентностью.

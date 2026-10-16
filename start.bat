@@ -2,7 +2,7 @@
 title Smart Digital Group - Ops & Profit Core
 echo ======================================================
 echo   Smart Digital Group - Ops & Profit Intelligence Core
-echo   Vibe Coding / AI Automation Developer System
+echo   AI Automation & Systems Operations Core
 echo ======================================================
 echo.
 echo [1/2] Zapusk servera na http://localhost:3000 ...
