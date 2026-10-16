@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Digital Group — Ops & Profit Intelligence System</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .metric-card {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+    input[type=range] {
+      accent-color: #4f46e5;
+    }
+    @keyframes pulse-dot {
+      0% { transform: scale(0.9); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+      100% { transform: scale(0.9); opacity: 1; }
+    }
+    .pulse-dot {
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen antialiased selection:bg-indigo-500 selection:text-white pb-20">
+
+  <!-- TOP APP BAR -->
+  <header class="border-b border-slate-200/80 bg-white/95 backdrop-blur sticky top-0 z-50 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-blue-500 flex items-center justify-center font-black text-white text-xl shadow-md shadow-indigo-500/20">
+          SD
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-bold text-lg text-slate-900 tracking-tight">Smart Digital Group</h1>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-semibold">Ops & Profit Core</span>
+          </div>
+          <p class="text-xs text-slate-500">Сквозной конвейер: Лид → КП → Сделка → Производство → Фин. результат</p>
+        </div>
+      </div>
+
+      <!-- SYSTEM STATUS (CLEAN, NO INTERVIEW OR OFFICE TEXT) -->
+      <div class="flex items-center gap-3 text-xs">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+          <span>Система активна • Live Sync</span>
+        </div>
+        <div class="px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-medium">
+          Октябрь 2026
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+
+    <!-- SUB-BANNER / NAVIGATION TABS -->
+    <div class="mb-6 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">
+          <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+          <span>Единый центр управления компанией</span>
+        </div>
+        <p class="text-xs text-slate-600">
+          Ответы на ключевые вопросы: Выручка, Себестоимость, Часы команды, Маржинальность по направлениям и Утечки прибыли.
+        </p>
+      </div>
+
+      <!-- TABS BUTTONS -->
+      <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs overflow-x-auto" id="nav-tabs">
+        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200">
+          📊 Сводный Дашборд
+        </button>
+        <button onclick="switchTab('calculator')" id="tab-calculator" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+          🧮 Юнит-Экономика (План/Факт)
+        </button>
+        <button onclick="switchTab('ai-generator')" id="tab-ai-generator" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+          ✨ AI-Генератор КП & Сметы <span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.2 rounded font-mono">NEW</span>
+        </button>
+        <button onclick="switchTab('handoff-flow')" id="tab-handoff-flow" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+          🔄 Симулятор Handoff
+        </button>
+        <button onclick="switchTab('leakage')" id="tab-leakage" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+          🚨 Утечки денег <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: EXECUTIVE DASHBOARD (WHITE THEME) -->
+    <section id="content-dashboard" class="space-y-6">
+      
+      <!-- TOP METRIC CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Metric 1: How much sold? -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Сколько мы продали?</span>
+            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">+24.5% MoM</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 tracking-tight font-mono">48 500 000 ₸</div>
+          <div class="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2.5 border-t border-slate-100">
+            <span>14 активных договоров</span>
+            <span class="text-indigo-600 font-semibold">Воронка: 18.2M ₸</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Real expenses -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Сколько реально потратили?</span>
+            <span class="text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">+9.5% к плану</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 tracking-tight font-mono">28 920 000 ₸</div>
+          <div class="w-full bg-slate-100 h-2 rounded-full mt-2.5 overflow-hidden">
+            <div class="bg-indigo-600 h-full rounded-full" style="width: 59.6%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-500 mt-2">
+            <span>ФОТ: 18.4M ₸</span>
+            <span>Подряд: 6.2M ₸</span>
+            <span>Оверхед: 4.3M ₸</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Margin & Actual Profit -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Фактическая прибыль</span>
+            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Маржа 40.4%</span>
+          </div>
+          <div class="text-3xl font-black text-emerald-600 tracking-tight font-mono">19 580 000 ₸</div>
+          <div class="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2.5 border-t border-slate-100">
+            <span>Чистый денежный остаток</span>
+            <span class="text-slate-600 font-medium">План: 38.0%</span>
+          </div>
+        </div>
+
+        <!-- Metric 4: Receivables & Money on Hold -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Дебиторка (в кассе позже)</span>
+            <span class="text-amber-700 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">3 счета</span>
+          </div>
+          <div class="text-3xl font-black text-amber-600 tracking-tight font-mono">6 250 000 ₸</div>
+          <div class="flex items-center justify-between text-xs text-rose-600 mt-2.5 pt-2.5 border-t border-slate-100">
+            <span class="flex items-center gap-1 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+              Просрочено > 14 дней:
+            </span>
+            <span class="font-bold font-mono">2 100 000 ₸</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MID SECTION: DIRECTIONS & REAL-TIME PROJECTS TABLE -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- DIRECTIONS & SERVICES PROFITABILITY (4 COLS) -->
+        <div class="lg:col-span-4 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Прибыльность услуг и направлений</h3>
+                <p class="text-xs text-slate-500">Где компания зарабатывает максимум</p>
+              </div>
+              <span class="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded">30 дней</span>
+            </div>
+
+            <!-- Direction Items -->
+            <div class="space-y-4">
+              <!-- AI Automation -->
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-indigo-200">
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                  <span class="text-slate-900 font-bold flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                    AI & Автоматизация процессов
+                  </span>
+                  <span class="text-emerald-700 font-bold font-mono bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">58.2% маржа</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-1.5">
+                  <div class="bg-indigo-600 h-full rounded-full" style="width: 58.2%"></div>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-600">
+                  <span>Выручка: 18 200 000 ₸</span>
+                  <span class="text-emerald-700 font-bold">Прибыль: 10.6M ₸</span>
+                </div>
+              </div>
+
+              <!-- Web / Low-code Dev -->
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                  <span class="text-slate-900 font-bold flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    Web & Low-code разработка
+                  </span>
+                  <span class="text-indigo-700 font-bold font-mono bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">39.1% маржа</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-1.5">
+                  <div class="bg-blue-600 h-full rounded-full" style="width: 39.1%"></div>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-600">
+                  <span>Выручка: 16 500 000 ₸</span>
+                  <span class="text-indigo-700 font-bold">Прибыль: 6.4M ₸</span>
+                </div>
+              </div>
+
+              <!-- Marketing / Performance -->
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                  <span class="text-slate-900 font-bold flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                    Performance Маркетинг
+                  </span>
+                  <span class="text-amber-800 font-bold font-mono bg-amber-50 px-2 py-0.5 rounded border border-amber-200">23.8% маржа</span>
+                </div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-1.5">
+                  <div class="bg-amber-500 h-full rounded-full" style="width: 23.8%"></div>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-600">
+                  <span>Выручка: 13 800 000 ₸</span>
+                  <span class="text-amber-700 font-bold">Прибыль: 3.2M ₸</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Action Insight -->
+          <div class="mt-4 p-3.5 rounded-xl bg-indigo-50 border border-indigo-200 text-xs">
+            <span class="font-bold text-indigo-900">💡 Вывод для руководства:</span>
+            <p class="text-slate-700 text-[11px] mt-1 leading-relaxed">
+              AI-автоматизация генерирует в 2.4 раза больше чистой прибыли на час работы команды. Рекомендуется перенаправить фокус пресейла на тиражируемые AI-решения.
+            </p>
+          </div>
+        </div>
+
+        <!-- REAL-TIME PROJECTS TABLE WITH PLAN/FACT (8 COLS) -->
+        <div class="lg:col-span-8 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Сквозной P&L по активным проектам</h3>
+                <p class="text-xs text-slate-500">Авто-синхронизация: CRM → Часы команды (Toggl/Clockify) → Фин. учет</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <input type="text" placeholder="Поиск проекта..." id="project-search" oninput="filterProjects()"
+                  class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 w-40">
+                <span class="text-xs px-2.5 py-1.5 rounded-md bg-emerald-50 text-emerald-700 font-semibold font-mono flex items-center gap-1.5 border border-emerald-200">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live Sync
+                </span>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs" id="projects-table">
+                <thead>
+                  <tr class="border-b border-slate-200 text-slate-500 font-semibold">
+                    <th class="pb-3">Проект и Клиент</th>
+                    <th class="pb-3">Договор</th>
+                    <th class="pb-3">Часы (План / Факт)</th>
+                    <th class="pb-3">Себестоимость</th>
+                    <th class="pb-3">Чистая прибыль</th>
+                    <th class="pb-3">Маржа %</th>
+                    <th class="pb-3 text-right">Статус</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100" id="projects-body">
+                  
+                  <!-- Project 1 -->
+                  <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3.5">
+                      <div class="font-bold text-slate-900">Kaspi B2B AI Assistant</div>
+                      <span class="text-[11px] text-slate-500">FinTech Solutions LLP</span>
+                    </td>
+                    <td class="py-3.5 font-mono text-slate-800 font-medium">7 800 000 ₸</td>
+                    <td class="py-3.5">
+                      <div class="font-mono text-slate-700">120ч / <span class="text-emerald-700 font-bold">108ч</span></div>
+                      <div class="text-[10px] text-emerald-700 font-semibold">Экономия 12 часов</div>
+                    </td>
+                    <td class="py-3.5 font-mono text-slate-600">3 450 000 ₸</td>
+                    <td class="py-3.5 font-mono font-bold text-emerald-600">4 350 000 ₸</td>
+                    <td class="py-3.5">
+                      <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 font-mono">55.8%</span>
+                    </td>
+                    <td class="py-3.5 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">Оплачен 100%</span>
+                    </td>
+                  </tr>
+
+                  <!-- Project 2 (Leak Case) -->
+                  <tr class="hover:bg-rose-50/50 transition bg-rose-50/20 border-l-3 border-l-rose-500">
+                    <td class="py-3.5">
+                      <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                        <span>E-commerce SuperApp</span>
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                      </div>
+                      <span class="text-[11px] text-slate-500">Retail Group KZ</span>
+                    </td>
+                    <td class="py-3.5 font-mono text-slate-800 font-medium">11 200 000 ₸</td>
+                    <td class="py-3.5">
+                      <div class="font-mono text-slate-700">180ч / <span class="text-rose-600 font-bold">234ч</span></div>
+                      <div class="text-[10px] text-rose-600 font-bold">+54ч перерасхода!</div>
+                    </td>
+                    <td class="py-3.5 font-mono text-rose-700 font-bold">8 900 000 ₸</td>
+                    <td class="py-3.5 font-mono font-bold text-amber-700">2 300 000 ₸</td>
+                    <td class="py-3.5">
+                      <span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-bold border border-rose-200 font-mono">20.5%</span>
+                    </td>
+                    <td class="py-3.5 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">Долг 2.1M ₸</span>
+                    </td>
+                  </tr>
+
+                  <!-- Project 3 -->
+                  <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3.5">
+                      <div class="font-bold text-slate-900">HR & Payroll Portal</div>
+                      <span class="text-[11px] text-slate-500">Logistics Central Asia</span>
+                    </td>
+                    <td class="py-3.5 font-mono text-slate-800 font-medium">5 500 000 ₸</td>
+                    <td class="py-3.5">
+                      <div class="font-mono text-slate-700">90ч / <span class="text-slate-800">84ч</span></div>
+                      <div class="text-[10px] text-slate-500 font-medium">В графике</div>
+                    </td>
+                    <td class="py-3.5 font-mono text-slate-600">2 800 000 ₸</td>
+                    <td class="py-3.5 font-mono font-bold text-emerald-600">2 700 000 ₸</td>
+                    <td class="py-3.5">
+                      <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 font-mono">49.1%</span>
+                    </td>
+                    <td class="py-3.5 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-semibold border border-slate-200">Аванс 50%</span>
+                    </td>
+                  </tr>
+
+                  <!-- Project 4 -->
+                  <tr class="hover:bg-slate-50 transition">
+                    <td class="py-3.5">
+                      <div class="font-bold text-slate-900">AI Lead Qualifier for Telegram</div>
+                      <span class="text-[11px] text-slate-500">Almaty Realty Group</span>
+                    </td>
+                    <td class="py-3.5 font-mono text-slate-800 font-medium">3 200 000 ₸</td>
+                    <td class="py-3.5">
+                      <div class="font-mono text-slate-700">45ч / <span class="text-emerald-700 font-bold">38ч</span></div>
+                      <div class="text-[10px] text-emerald-700 font-semibold">Экономия 7ч</div>
+                    </td>
+                    <td class="py-3.5 font-mono text-slate-600">1 240 000 ₸</td>
+                    <td class="py-3.5 font-mono font-bold text-emerald-600">1 960 000 ₸</td>
+                    <td class="py-3.5">
+                      <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 font-mono">61.2%</span>
+                    </td>
+                    <td class="py-3.5 text-right">
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">Оплачен 100%</span>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+            <span>Всего в портфеле: 14 активных проектов компании</span>
+            <button onclick="switchTab('calculator')" class="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1">
+              Перейти к калькулятору проекта →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: INTERACTIVE UNIT ECONOMICS (WHITE THEME) -->
+    <section id="content-calculator" class="hidden space-y-6">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <span>Калькулятор Юнит-Экономики Проекта (План vs Факт)</span>
+              <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-0.5 rounded-full border border-indigo-200">Live Modeling</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">
+              Математика формирования себестоимости, расчет стоимости часа команды и влияние перерасхода на чистую прибыль.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="loadScenario('ideal')" class="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 font-medium transition">
+              Сценарий: Идеал (Маржа 55%)
+            </button>
+            <button onclick="loadScenario('overrun')" class="text-xs px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-medium transition">
+              Сценарий: Провал (+40% часов)
+            </button>
+            <button onclick="resetCalculator()" class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium transition">
+              Сброс
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
+          
+          <!-- INPUTS (7 COLS) -->
+          <div class="lg:col-span-7 space-y-5">
+            
+            <!-- Price for Client -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <label class="block text-xs font-bold text-slate-700 mb-1">
+                Цена договора для клиента (Выручка), ₸
+              </label>
+              <input type="number" id="input-price" value="6500000" step="100000" oninput="recalcProject()" 
+                class="w-full bg-white border border-slate-300 rounded-lg px-3.5 py-2 text-slate-900 font-mono text-base focus:border-indigo-600 focus:outline-none shadow-xs">
+              <div class="flex justify-between text-[11px] text-slate-500 mt-1.5">
+                <span>Бюджет проекта по смете и договору</span>
+                <span id="price-formatted" class="text-indigo-600 font-mono font-bold">6 500 000 ₸</span>
+              </div>
+            </div>
+
+            <!-- Team Hours & Internal Hourly Rates -->
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+              <div class="flex justify-between items-center">
+                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Прямой ФОТ (Внутренние ставки специалистов)
+                </h4>
+                <span class="text-[11px] text-slate-500">Часы × Ставка/час</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <!-- AI / Vibe Coder -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                  <div class="flex justify-between font-bold text-slate-800 mb-1">
+                    <span>AI Automation / Vibe Coder</span>
+                    <span class="text-indigo-600 font-mono">12 000 ₸/ч</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="number" id="hours-ai" value="60" min="0" oninput="recalcProject()"
+                      class="w-20 bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-900 font-mono text-right focus:border-indigo-600">
+                    <span class="text-slate-500">плановых часов</span>
+                  </div>
+                </div>
+
+                <!-- Backend / Integrations -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                  <div class="flex justify-between font-bold text-slate-800 mb-1">
+                    <span>Backend & API Интегратор</span>
+                    <span class="text-indigo-600 font-mono">14 000 ₸/ч</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="number" id="hours-dev" value="50" min="0" oninput="recalcProject()"
+                      class="w-20 bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-900 font-mono text-right focus:border-indigo-600">
+                    <span class="text-slate-500">плановых часов</span>
+                  </div>
+                </div>
+
+                <!-- Project Manager -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                  <div class="flex justify-between font-bold text-slate-800 mb-1">
+                    <span>PM / Бизнес-аналитик</span>
+                    <span class="text-indigo-600 font-mono">9 000 ₸/ч</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="number" id="hours-pm" value="35" min="0" oninput="recalcProject()"
+                      class="w-20 bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-900 font-mono text-right focus:border-indigo-600">
+                    <span class="text-slate-500">плановых часов</span>
+                  </div>
+                </div>
+
+                <!-- UI/UX & QA -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                  <div class="flex justify-between font-bold text-slate-800 mb-1">
+                    <span>UI/UX Дизайн & Тестирование</span>
+                    <span class="text-indigo-600 font-mono">8 000 ₸/ч</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="number" id="hours-qa" value="25" min="0" oninput="recalcProject()"
+                      class="w-20 bg-slate-50 border border-slate-300 rounded px-2.5 py-1 text-slate-900 font-mono text-right focus:border-indigo-600">
+                    <span class="text-slate-500">плановых часов</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Direct External Costs & Overhead Rate -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <label class="block text-xs font-bold text-slate-700 mb-1">
+                  Подрядчики, API & Серверы, ₸
+                </label>
+                <input type="number" id="input-direct-other" value="450000" step="50000" oninput="recalcProject()"
+                  class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 font-mono text-sm focus:border-indigo-600">
+                <p class="text-[11px] text-slate-500 mt-1">OpenAI API, Supabase Pro, Cloud, внешние верстальщики</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="flex justify-between items-center mb-1">
+                  <label class="text-xs font-bold text-slate-700">
+                    Косвенные расходы (Overhead %)
+                  </label>
+                  <span id="label-overhead" class="text-xs font-mono text-indigo-600 font-bold">15%</span>
+                </div>
+                <input type="range" id="input-overhead" min="5" max="35" value="15" oninput="recalcProject()" class="w-full">
+                <p class="text-[11px] text-slate-500 mt-1">Офисные расходы, налоги, софт, аренда, бухгалтерия</p>
+              </div>
+            </div>
+
+            <!-- SCOPE CREEP / OVERRUN SIMULATOR -->
+            <div class="p-4 rounded-xl bg-rose-50/50 border border-rose-200">
+              <div class="flex justify-between items-center mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  <label class="text-xs font-bold text-rose-900">
+                    Симуляция перерасхода часов командой (Scope Creep):
+                  </label>
+                </div>
+                <span id="label-overrun" class="text-xs font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">+0% (в плане)</span>
+              </div>
+              <input type="range" id="input-overrun" min="0" max="60" value="0" step="5" oninput="recalcProject()" class="w-full">
+              <p class="text-[11px] text-slate-600 mt-1">
+                Потяните ползунок вправо: смотрите, как дополнительные правки без доплат «съедают» маржу компании.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- RESULTS & SUMMARY (5 COLS) -->
+          <div class="lg:col-span-5 flex flex-col justify-between p-6 rounded-2xl bg-white border border-slate-200 shadow-md">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                <span class="text-xs font-bold uppercase text-slate-500 tracking-wider">Итоговая экономика</span>
+                <span id="badge-profit-status" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Здоровая маржа
+                </span>
+              </div>
+
+              <!-- Cost breakdown list -->
+              <div class="space-y-3 text-xs">
+                <div class="flex justify-between items-center text-slate-700 font-medium">
+                  <span>Выручка от клиента:</span>
+                  <span id="res-revenue" class="font-mono font-bold text-slate-900 text-sm">6 500 000 ₸</span>
+                </div>
+
+                <div class="flex justify-between items-center text-slate-600">
+                  <span>Прямой ФОТ часов:</span>
+                  <span id="res-fot" class="font-mono text-slate-800">1 935 000 ₸</span>
+                </div>
+
+                <div class="flex justify-between items-center text-slate-600">
+                  <span>Подрядчики & API сервисы:</span>
+                  <span id="res-direct-other" class="font-mono text-slate-800">450 000 ₸</span>
+                </div>
+
+                <div class="flex justify-between items-center text-slate-600">
+                  <span>Косвенные расходы (Overhead):</span>
+                  <span id="res-overhead" class="font-mono text-slate-800">357 750 ₸</span>
+                </div>
+
+                <div class="pt-2.5 border-t border-slate-100 flex justify-between items-center text-slate-800 font-semibold">
+                  <span>Полная себестоимость (Cost Price):</span>
+                  <span id="res-total-cost" class="font-mono text-rose-600 font-bold text-sm">2 742 750 ₸</span>
+                </div>
+              </div>
+
+              <!-- BIG PROFIT DISPLAY -->
+              <div class="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div class="text-xs text-slate-500 mb-1 font-medium">Фактическая чистая прибыль</div>
+                <div id="res-net-profit" class="text-3xl font-black text-emerald-600 font-mono tracking-tight">
+                  3 757 250 ₸
+                </div>
+                <div class="flex justify-center items-center gap-3 mt-2 text-xs">
+                  <span class="text-slate-600">Маржинальность:</span>
+                  <span id="res-margin-percent" class="font-bold text-emerald-700 font-mono text-sm bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">57.8%</span>
+                </div>
+              </div>
+
+              <!-- HOURS -->
+              <div class="mt-4 flex justify-between text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <span>Итого часов команды:</span>
+                <span id="res-total-hours" class="font-mono font-bold text-slate-800">170 часов</span>
+              </div>
+            </div>
+
+            <!-- BUSINESS INSIGHT -->
+            <div class="mt-6 p-3.5 rounded-xl bg-indigo-50 border border-indigo-200 text-xs text-indigo-900 leading-relaxed">
+              <strong>💡 Системный контроль:</strong> 
+              Автоматизация финучета предупреждает PM-а за 3–4 дня до того, как проект уйдет в минус. Как только затрекано 80% плановых часов, система переводит задачи в режим проверки доп. соглашений.
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: AI PRE-SALE & CP GENERATOR (WHITE THEME) -->
+    <section id="ai-generator" class="hidden space-y-6">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
+              <h3 class="text-base font-bold text-slate-900">AI-Генератор КП и Сметы (Пресейл в 1 клик)</h3>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              Автоматизация цикла: лид → контакт → встреча → КП → сделка → договор. Мгновенно раскладывает бриф на этапы, часы и формирует коммерческое предложение.
+            </p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-bold">
+            Live Tool
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
+          
+          <!-- INPUT PROMPT (5 COLS) -->
+          <div class="lg:col-span-5 space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                Выберите типовой проект или введите задачу клиента:
+              </label>
+              <div class="flex flex-wrap gap-2 mb-3">
+                <button onclick="setBrief('chatbot')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
+                  🤖 AI Чат-бот продаж
+                </button>
+                <button onclick="setBrief('crm')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
+                  ⚡ n8n + AmoCRM
+                </button>
+                <button onclick="setBrief('portal')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
+                  🌐 B2B Портал / ERP
+                </button>
+              </div>
+              <textarea id="brief-text" rows="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 leading-relaxed font-sans"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Желаемая маржа</label>
+                <select id="brief-margin" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs text-slate-900 focus:outline-none">
+                  <option value="0.45">45% (Стандарт)</option>
+                  <option value="0.55" selected>55% (Премиум / AI)</option>
+                  <option value="0.35">35% (Тендер)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Срочность</label>
+                <select id="brief-speed" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs text-slate-900 focus:outline-none">
+                  <option value="1.0">Стандарт (3-4 недели)</option>
+                  <option value="1.25">Срочно (+25% к чеку)</option>
+                </select>
+              </div>
+            </div>
+
+            <button onclick="generateProposal()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              <span>Сгенерировать смету и структуру КП за 2 сек</span>
+            </button>
+          </div>
+
+          <!-- GENERATED PROPOSAL DISPLAY (7 COLS) -->
+          <div class="lg:col-span-7 p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-3">
+                <span class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <span class="text-indigo-600">📄 Готовое Коммерческое Предложение</span>
+                </span>
+                <span id="proposal-status" class="text-[11px] font-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded font-bold">
+                  Готово к отправке
+                </span>
+              </div>
+
+              <!-- Output Body -->
+              <div id="proposal-output" class="text-xs text-slate-700 space-y-3 max-h-[380px] overflow-y-auto pr-2 leading-relaxed">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
+              <span class="text-[11px] text-slate-500">Авто-экспорт в PDF и привязка к сделке в CRM</span>
+              <button onclick="alert('КП скопировано в буфер обмена! Вы можете вставить его в CRM или отправить клиенту.')" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition shadow-xs">
+                Копировать КП для клиента
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 4: INTERACTIVE HANDOFF SIMULATOR (WHITE THEME) -->
+    <section id="content-handoff-flow" class="hidden space-y-6">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+        <div class="border-b border-slate-200 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <span>Симулятор сквозного Handoff (Передача из Продаж в Производство)</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">
+              Нажмите кнопку «Сделка выиграна», чтобы увидеть, как цепочка n8n + Webhooks за 3 секунды разворачивает проект во всех системах без участия менеджера.
+            </p>
+          </div>
+          <button onclick="runHandoffSimulation()" id="btn-run-handoff" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition flex items-center gap-2">
+            <span>▶ Симулировать победу сделки (Won)</span>
+          </button>
+        </div>
+
+        <!-- STEP BY STEP INTERACTIVE FLOW -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="handoff-steps">
+          
+          <!-- Step 1 -->
+          <div id="step-card-1" class="p-4 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+            <div class="flex items-center justify-between mb-2">
+              <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs" id="step-badge-1">1</span>
+              <span class="text-[10px] text-slate-500 font-mono font-medium" id="step-time-1">CRM Event</span>
+            </div>
+            <h4 class="text-xs font-bold text-slate-900 mb-1">Сделка перешла в «Оплачено»</h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed" id="step-desc-1">
+              Клиент перевел аванс 50% (3.25M ₸). Сделка меняет статус в AmoCRM. Срабатывает webhook в n8n.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div id="step-card-2" class="p-4 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+            <div class="flex items-center justify-between mb-2">
+              <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs" id="step-badge-2">2</span>
+              <span class="text-[10px] text-slate-500 font-mono font-medium" id="step-time-2">Task Manager</span>
+            </div>
+            <h4 class="text-xs font-bold text-slate-900 mb-1">Создание проекта в ClickUp</h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed" id="step-desc-2">
+              Автоматически генерируется проект, шаблоны спринтов и привязываются лимиты часов по смете.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div id="step-card-3" class="p-4 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+            <div class="flex items-center justify-between mb-2">
+              <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs" id="step-badge-3">3</span>
+              <span class="text-[10px] text-slate-500 font-mono font-medium" id="step-time-3">Database Core</span>
+            </div>
+            <h4 class="text-xs font-bold text-slate-900 mb-1">Регистрация в Supabase P&L</h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed" id="step-desc-3">
+              Фиксируется плановая себестоимость, график платежей и допустимый порог перерасхода.
+            </p>
+          </div>
+
+          <!-- Step 4 -->
+          <div id="step-card-4" class="p-4 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+            <div class="flex items-center justify-between mb-2">
+              <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs" id="step-badge-4">4</span>
+              <span class="text-[10px] text-slate-500 font-mono font-medium" id="step-time-4">Team Alert</span>
+            </div>
+            <h4 class="text-xs font-bold text-slate-900 mb-1">Оповещение в Telegram</h4>
+            <p class="text-[11px] text-slate-600 leading-relaxed" id="step-desc-4">
+              PM и тимлид получают уведомление с готовыми ссылками на бриф, репозиторий и чат проекта.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- LOG CONSOLE -->
+        <div class="mt-6 p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] shadow-inner">
+          <div class="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2 mb-2">
+            <span>Журнал событий вебхука (n8n execution log):</span>
+            <span id="log-status" class="text-slate-300">Ожидание запуска</span>
+          </div>
+          <div id="handoff-console" class="space-y-1 text-slate-300 max-h-32 overflow-y-auto">
+            <div>[08:00:00] Webhook listener активен на endpoint: /api/v1/deal-won</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 5: PROFIT LEAKAGE ENGINE (WHITE THEME) -->
+    <section id="content-leakage" class="hidden space-y-6">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+        <div class="border-b border-slate-200 pb-4 mb-6">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+            <h3 class="text-base font-bold text-slate-900">Детектор утечек прибыли (Profit Leakage Engine)</h3>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">
+            Контроль финансовой дисциплины: выявление невидимых финансовых дыр до того, как они станут убытком компании.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          
+          <!-- Leak 1 -->
+          <div class="p-5 rounded-xl bg-slate-50 border border-rose-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-3">
+                <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold border border-rose-200">Утечка №1</span>
+                <span class="text-rose-700 font-mono font-bold">-1 850 000 ₸</span>
+              </div>
+              <h4 class="text-sm font-bold text-slate-900 mb-2">Scope Creep (Бесплатные доработки)</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Клиент в мессенджере просит «чуть подправить логику» или «добавить интеграцию». Разработчик делает это за 15 часов, которые компания дарит бесплатно.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-200">
+              <div class="text-[11px] text-emerald-800 font-bold">Как решает AI-автоматизация:</div>
+              <p class="text-[11px] text-slate-600 mt-0.5">
+                Авто-сверка сметы: когда затрекано 80% часов по спринту, система запрещает брать новые тикеты без галочки «Доп. счет утвержден».
+              </p>
+            </div>
+          </div>
+
+          <!-- Leak 2 -->
+          <div class="p-5 rounded-xl bg-slate-50 border border-amber-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-3">
+                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold border border-amber-200">Утечка №2</span>
+                <span class="text-amber-700 font-mono font-bold">2 100 000 ₸ застряло</span>
+              </div>
+              <h4 class="text-sm font-bold text-slate-900 mb-2">Зависшая дебиторка и акты</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Проект сдан, код выкачен на прод, но клиент тянет с подписанием акта 3 недели. Финальные 40% денег не поступают на счет.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-200">
+              <div class="text-[11px] text-emerald-800 font-bold">Как решает AI-автоматизация:</div>
+              <p class="text-[11px] text-slate-600 mt-0.5">
+                Авто-эскалация: n8n генерирует ссылку на электронную подпись. За 3 дня до дедлайна уведомляет ЛПР клиента через WhatsApp/Telegram.
+              </p>
+            </div>
+          </div>
+
+          <!-- Leak 3 -->
+          <div class="p-5 rounded-xl bg-slate-50 border border-indigo-200 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-3">
+                <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold border border-indigo-200">Утечка №3</span>
+                <span class="text-indigo-700 font-mono font-bold">-480 000 ₸ / мес</span>
+              </div>
+              <h4 class="text-sm font-bold text-slate-900 mb-2">Неучтенные токены и инфраструктура</h4>
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Разработчики гоняют тяжелые промпты OpenAI и хранят данные в облаках без привязки к конкретным клиентам. Все списывается в общие убытки.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-200">
+              <div class="text-[11px] text-emerald-800 font-bold">Как решает AI-автоматизация:</div>
+              <p class="text-[11px] text-slate-600 mt-0.5">
+                Централизованный прокси с заголовком <code>project_id</code>: каждый вызов API автоматически приплюсовывается к расходам конкретного проекта.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SCRIPTS -->
+  <script>
+    // Tab Switching
+    function switchTab(tabId) {
+      const tabs = ['dashboard', 'calculator', 'ai-generator', 'handoff-flow', 'leakage'];
+      tabs.forEach(t => {
+        const content = document.getElementById('content-' + t) || document.getElementById(t);
+        const btn = document.getElementById('tab-' + t);
+        if (content) {
+          if (t === tabId) {
+            content.classList.remove('hidden');
+          } else {
+            content.classList.add('hidden');
+          }
+        }
+        if (btn) {
+          if (t === tabId) {
+            btn.className = "px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200";
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900";
+          }
+        }
+      });
+    }
+
+    // Number formatter for KZT
+    function formatKZT(num) {
+      return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+    }
+
+    // Dynamic Unit Economics Calculation
+    function recalcProject() {
+      const price = parseFloat(document.getElementById('input-price').value) || 0;
+      
+      const hAi = parseFloat(document.getElementById('hours-ai').value) || 0;
+      const hDev = parseFloat(document.getElementById('hours-dev').value) || 0;
+      const hPm = parseFloat(document.getElementById('hours-pm').value) || 0;
+      const hQa = parseFloat(document.getElementById('hours-qa').value) || 0;
+      
+      const directOther = parseFloat(document.getElementById('input-direct-other').value) || 0;
+      const overheadPercent = parseFloat(document.getElementById('input-overhead').value) || 15;
+      const overrunPercent = parseFloat(document.getElementById('input-overrun').value) || 0;
+
+      // Update UI labels
+      document.getElementById('price-formatted').innerText = formatKZT(price);
+      document.getElementById('label-overhead').innerText = overheadPercent + "%";
+      
+      const overrunLabel = document.getElementById('label-overrun');
+      if (overrunPercent === 0) {
+        overrunLabel.innerText = "+0% (в плане)";
+        overrunLabel.className = "text-xs font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200";
+      } else {
+        overrunLabel.innerText = "+" + overrunPercent + "% перерасход";
+        overrunLabel.className = "text-xs font-mono text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200";
+      }
+
+      // Rates per hour
+      const rateAi = 12000;
+      const rateDev = 14000;
+      const ratePm = 9000;
+      const rateQa = 8000;
+
+      const overrunFactor = 1 + (overrunPercent / 100);
+
+      // Actual hours & Labor cost
+      const actualHoursAi = hAi * overrunFactor;
+      const actualHoursDev = hDev * overrunFactor;
+      const actualHoursPm = hPm * overrunFactor;
+      const actualHoursQa = hQa * overrunFactor;
+
+      const totalHours = actualHoursAi + actualHoursDev + actualHoursPm + actualHoursQa;
+      const laborCost = (actualHoursAi * rateAi) + (actualHoursDev * rateDev) + (actualHoursPm * ratePm) + (actualHoursQa * rateQa);
+
+      // Direct costs
+      const directTotal = laborCost + directOther;
+
+      // Overhead
+      const overheadCost = directTotal * (overheadPercent / 100);
+
+      // Total Cost Price
+      const totalCost = directTotal + overheadCost;
+
+      // Net profit & Margin
+      const netProfit = price - totalCost;
+      const marginPercent = price > 0 ? (netProfit / price) * 100 : 0;
+
+      // Update Results DOM
+      document.getElementById('res-revenue').innerText = formatKZT(price);
+      document.getElementById('res-fot').innerText = formatKZT(laborCost);
+      document.getElementById('res-direct-other').innerText = formatKZT(directOther);
+      document.getElementById('res-overhead').innerText = formatKZT(overheadCost);
+      document.getElementById('res-total-cost').innerText = formatKZT(totalCost);
+      document.getElementById('res-total-hours').innerText = Math.round(totalHours) + " часов " + (overrunPercent > 0 ? `(+${Math.round(totalHours - (hAi+hDev+hPm+hQa))}ч)` : "");
+      
+      const profitEl = document.getElementById('res-net-profit');
+      const marginEl = document.getElementById('res-margin-percent');
+      const statusBadge = document.getElementById('badge-profit-status');
+
+      profitEl.innerText = formatKZT(netProfit);
+      marginEl.innerText = marginPercent.toFixed(1) + "%";
+
+      if (netProfit < 0) {
+        profitEl.className = "text-3xl font-black text-rose-600 font-mono tracking-tight";
+        marginEl.className = "font-bold text-rose-700 font-mono text-sm bg-rose-50 px-2 py-0.5 rounded border border-rose-200";
+        statusBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200";
+        statusBadge.innerText = "Убыточный проект";
+      } else if (marginPercent < 25) {
+        profitEl.className = "text-3xl font-black text-amber-600 font-mono tracking-tight";
+        marginEl.className = "font-bold text-amber-800 font-mono text-sm bg-amber-50 px-2 py-0.5 rounded border border-amber-200";
+        statusBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200";
+        statusBadge.innerText = "Низкая маржа";
+      } else {
+        profitEl.className = "text-3xl font-black text-emerald-600 font-mono tracking-tight";
+        marginEl.className = "font-bold text-emerald-700 font-mono text-sm bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200";
+        statusBadge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200";
+        statusBadge.innerText = "Здоровая маржа";
+      }
+    }
+
+    function resetCalculator() {
+      document.getElementById('input-price').value = 6500000;
+      document.getElementById('hours-ai').value = 60;
+      document.getElementById('hours-dev').value = 50;
+      document.getElementById('hours-pm').value = 35;
+      document.getElementById('hours-qa').value = 25;
+      document.getElementById('input-direct-other').value = 450000;
+      document.getElementById('input-overhead').value = 15;
+      document.getElementById('input-overrun').value = 0;
+      recalcProject();
+    }
+
+    function loadScenario(type) {
+      if (type === 'ideal') {
+        document.getElementById('input-price').value = 7500000;
+        document.getElementById('hours-ai').value = 50;
+        document.getElementById('hours-dev').value = 40;
+        document.getElementById('hours-pm').value = 25;
+        document.getElementById('hours-qa').value = 20;
+        document.getElementById('input-direct-other').value = 350000;
+        document.getElementById('input-overhead').value = 12;
+        document.getElementById('input-overrun').value = 0;
+      } else if (type === 'overrun') {
+        document.getElementById('input-price').value = 6000000;
+        document.getElementById('hours-ai').value = 60;
+        document.getElementById('hours-dev').value = 55;
+        document.getElementById('hours-pm').value = 40;
+        document.getElementById('hours-qa').value = 30;
+        document.getElementById('input-direct-other').value = 600000;
+        document.getElementById('input-overhead').value = 18;
+        document.getElementById('input-overrun').value = 40;
+      }
+      recalcProject();
+    }
+
+    // Brief & AI Proposal Generator
+    const briefs = {
+      chatbot: "Разработка многоканального AI-ассистента для отдела продаж (Telegram + WhatsApp). Задачи: интеграция с базой знаний компании, квалификация лида по скоринг-модели, авто-запись на встречу в Google Calendar и фиксация сделки в AmoCRM.",
+      crm: "Построение сквозной автоматизации на n8n: AmoCRM ↔ ClickUp ↔ 1С/МойСклад. Автоматическое выставление счетов, контроль подписания договоров через СМС/ЭЦП, авто-передача оплаченных сделок в проектный отдел.",
+      portal: "Разработка внутреннего B2B-портала для дилеров на Retool/Next.js + Supabase. Личный кабинет с каталогом, балансом дебиторской задолженности, историей отгрузок и генерацией актов сверки."
+    };
+
+    function setBrief(type) {
+      document.getElementById('brief-text').value = briefs[type];
+      generateProposal();
+    }
+
+    function generateProposal() {
+      const text = document.getElementById('brief-text').value;
+      const margin = parseFloat(document.getElementById('brief-margin').value);
+      const speed = parseFloat(document.getElementById('brief-speed').value);
+
+      let baseHours = text.includes('ERP') || text.includes('Портал') ? 160 : (text.includes('CRM') ? 110 : 80);
+      let basePrice = (baseHours * 13500 * (1 / (1 - margin))) * speed;
+      let profit = basePrice * margin;
+      let cost = basePrice - profit;
+
+      const output = document.getElementById('proposal-output');
+      output.innerHTML = `
+        <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2 shadow-xs">
+          <div class="text-slate-900 font-bold text-sm">Проект: Сквозное Digital-решение под ключ</div>
+          <p class="text-slate-600 text-[11px] leading-relaxed">${text}</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+            <span class="text-[10px] text-slate-500 font-medium">Стоимость для клиента</span>
+            <div class="text-slate-900 font-bold font-mono text-sm mt-0.5">${formatKZT(basePrice)}</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+            <span class="text-[10px] text-slate-500 font-medium">Плановые часы команды</span>
+            <div class="text-indigo-600 font-bold font-mono text-sm mt-0.5">${baseHours} часов</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white border border-slate-200 shadow-xs">
+            <span class="text-[10px] text-slate-500 font-medium">Плановая прибыль</span>
+            <div class="text-emerald-700 font-bold font-mono text-sm mt-0.5">${formatKZT(profit)} (${Math.round(margin*100)}%)</div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <div class="text-slate-900 font-bold text-xs mb-2">Этапы реализации и дорожная карта:</div>
+          <ol class="space-y-1.5 list-decimal list-inside text-[11px] text-slate-600">
+            <li><strong>Этап 1 (5 рабочих дней):</strong> Системный аудит, согласование API-эндпоинтов, прототип архитектуры.</li>
+            <li><strong>Этап 2 (10 рабочих дней):</strong> Настройка ядра интеграций (n8n/Supabase), подключение AI-моделей и промпт-инжиниринг.</li>
+            <li><strong>Этап 3 (5 рабочих дней):</strong> Тестирование граничных кейсов, нагрузочный тест, сквозная проверка с CRM.</li>
+            <li><strong>Этап 4 (4 рабочих дня):</strong> Обучение команды заказчика, передача документации, релиз в production.</li>
+          </ol>
+        </div>
+
+        <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800 font-medium">
+          ✅ Сформирован шаблон договора и счет на аванс 50% (${formatKZT(basePrice*0.5)}). Привязана автоматическая постановка задач в таск-менеджер.
+        </div>
+      `;
+    }
+
+    // Interactive Handoff Simulation
+    let simulationRunning = false;
+    function runHandoffSimulation() {
+      if (simulationRunning) return;
+      simulationRunning = true;
+      
+      const btn = document.getElementById('btn-run-handoff');
+      const consoleEl = document.getElementById('handoff-console');
+      const statusEl = document.getElementById('log-status');
+      btn.innerText = "⏳ Выполняется сквозной Handoff...";
+      btn.className = "px-4 py-2.5 rounded-xl bg-slate-200 text-slate-500 font-bold text-xs cursor-not-allowed";
+      statusEl.innerText = "Обработка Webhook...";
+      statusEl.className = "text-indigo-400 font-mono";
+
+      function resetCards() {
+        for (let i = 1; i <= 4; i++) {
+          document.getElementById('step-card-' + i).className = "p-4 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300";
+          document.getElementById('step-badge-' + i).className = "w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs";
+        }
+      }
+      resetCards();
+
+      // Step 1
+      setTimeout(() => {
+        document.getElementById('step-card-1').className = "p-4 rounded-xl bg-indigo-50 border-2 border-indigo-600 shadow-sm transition-all duration-300";
+        document.getElementById('step-badge-1').className = "w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs";
+        consoleEl.innerHTML += `<div>[08:00:01] <span class="text-emerald-400">HTTP POST /webhook/deal-won:</span> Deal #1042 ("Kaspi B2B AI") status changed to 'Won'. Advance payment 3 250 000 ₸ verified.</div>`;
+      }, 500);
+
+      // Step 2
+      setTimeout(() => {
+        document.getElementById('step-card-2').className = "p-4 rounded-xl bg-blue-50 border-2 border-blue-600 shadow-sm transition-all duration-300";
+        document.getElementById('step-badge-2').className = "w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs";
+        consoleEl.innerHTML += `<div>[08:00:02] <span class="text-cyan-400">ClickUp API:</span> Project 'PRJ-1042' created from template 'AI_BOT_V2'. 4 Sprints, 18 tasks generated. Hours budget set to 120h.</div>`;
+      }, 1400);
+
+      // Step 3
+      setTimeout(() => {
+        document.getElementById('step-card-3').className = "p-4 rounded-xl bg-purple-50 border-2 border-purple-600 shadow-sm transition-all duration-300";
+        document.getElementById('step-badge-3').className = "w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-xs";
+        consoleEl.innerHTML += `<div>[08:00:03] <span class="text-purple-400">Supabase DB:</span> INSERT INTO projects_pnl: target_revenue=6.5M ₸, max_hours=120, alert_threshold=96h, overhead_pct=15%.</div>`;
+      }, 2300);
+
+      // Step 4
+      setTimeout(() => {
+        document.getElementById('step-card-4').className = "p-4 rounded-xl bg-emerald-50 border-2 border-emerald-600 shadow-sm transition-all duration-300";
+        document.getElementById('step-badge-4').className = "w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs";
+        consoleEl.innerHTML += `<div>[08:00:04] <span class="text-emerald-400">Telegram Bot:</span> Alert sent to PM Channel: "🚀 Новый проект запущен! Смета: 6.5M ₸. Лимит: 120ч. Репозиторий и спринты готовы."</div>`;
+        
+        statusEl.innerText = "Handoff успешно завершен (3.8s)";
+        statusEl.className = "text-emerald-400 font-mono";
+        btn.innerText = "✓ Симуляция завершена (Запустить снова)";
+        btn.className = "px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-sm";
+        simulationRunning = false;
+      }, 3200);
+    }
+
+    // Filter projects table
+    function filterProjects() {
+      const q = document.getElementById('project-search').value.toLowerCase();
+      const rows = document.querySelectorAll('#projects-body tr');
+      rows.forEach(r => {
+        const text = r.innerText.toLowerCase();
+        r.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      setBrief('chatbot');
+      recalcProject();
+    });
+  </script>
+</body>
+</html>

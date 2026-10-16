@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Digital Group — Ops & Profit Intelligence System</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    .metric-card {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+    .modal-backdrop {
+      background-color: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+    }
+    @keyframes pulse-dot {
+      0% { transform: scale(0.9); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+      100% { transform: scale(0.9); opacity: 1; }
+    }
+    .pulse-dot {
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen antialiased selection:bg-indigo-500 selection:text-white pb-24">
+
+  <!-- TOP APP BAR -->
+  <header class="border-b border-slate-200/80 bg-white/95 backdrop-blur sticky top-0 z-40 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-blue-500 flex items-center justify-center font-black text-white text-xl shadow-md shadow-indigo-500/20">
+          SD
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-bold text-lg text-slate-900 tracking-tight">Smart Digital Group</h1>
+            <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-semibold">Ops & Profit Core</span>
+          </div>
+          <p class="text-xs text-slate-500">Сквозной конвейер: Лид → КП → Сделка → Производство → Фин. результат</p>
+        </div>
+      </div>
+
+      <!-- SYSTEM STATUS & ACTIONS -->
+      <div class="flex items-center gap-2.5 text-xs">
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+          <span>API Connected • Live DB</span>
+        </div>
+        <a href="/api/export/pnl" download="smart_digital_pnl_report.csv" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium border border-slate-200 transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          <span>Экспорт P&L (CSV)</span>
+        </a>
+        <button onclick="openNewProjectModal()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-xs shadow-indigo-600/20 transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          <span>Новый проект</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+
+    <!-- SUB-BANNER / NAVIGATION TABS -->
+    <div class="mb-6 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">
+          <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+          <span>Единый центр управления компанией</span>
+        </div>
+        <p class="text-xs text-slate-600">
+          Управление полным бизнес-циклом: Лиды, Производство, Часы специалистов, Фин. результат и Дебиторка.
+        </p>
+      </div>
+
+      <!-- TABS -->
+      <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs overflow-x-auto" id="nav-tabs">
+        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200">
+          📊 Сводный Дашборд
+        </button>
+        <button onclick="switchTab('crm')" id="tab-crm" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+          🎯 CRM Воронка (Handoff)
+        </button>
+        <button onclick="switchTab('projects')" id="tab-projects" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+          📁 Реестр Проектов & P&L
+        </button>
+        <button onclick="switchTab('invoices')" id="tab-invoices" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900">
+          💳 Счета & Дебиторка
+        </button>
+        <button onclick="switchTab('ai-generator')" id="tab-ai-generator" class="px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+          ✨ AI-Генератор КП <span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.2 rounded font-mono">LIVE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: EXECUTIVE DASHBOARD -->
+    <section id="content-dashboard" class="space-y-6">
+      
+      <!-- TOP METRIC CARDS (REAL DYNAMIC DATA) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Metric 1: Total Revenue -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Сколько продали (Выручка)</span>
+            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200" id="kpi-projects-count">-- проектов</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 tracking-tight font-mono" id="kpi-revenue">-- ₸</div>
+          <div class="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2.5 border-t border-slate-100">
+            <span>Сумма договоров</span>
+            <span class="text-indigo-600 font-semibold" id="kpi-active-projects">-- в работе</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Real Expenses -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Сколько реально потратили</span>
+            <span class="text-slate-600 font-mono text-[11px] bg-slate-100 px-1.5 py-0.5 rounded">Себестоимость</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 tracking-tight font-mono" id="kpi-costs">-- ₸</div>
+          <div class="w-full bg-slate-100 h-2 rounded-full mt-2.5 overflow-hidden">
+            <div id="kpi-cost-bar" class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-500 mt-2">
+            <span>ФОТ часов + Подрядчики + Overhead 15%</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Net Profit & Margin -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Фактическая чистая прибыль</span>
+            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200" id="kpi-margin-badge">Маржа --%</span>
+          </div>
+          <div class="text-3xl font-black text-emerald-600 tracking-tight font-mono" id="kpi-profit">-- ₸</div>
+          <div class="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2.5 border-t border-slate-100">
+            <span>Денежный остаток бизнеса</span>
+            <span class="text-emerald-700 font-bold" id="kpi-margin-text">--%</span>
+          </div>
+        </div>
+
+        <!-- Metric 4: Receivables & Overdue -->
+        <div class="metric-card p-5 rounded-2xl bg-white border border-slate-200 shadow-xs relative overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-500 mb-2 font-medium">
+            <span>Дебиторская задолженность</span>
+            <span class="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">Остаток оплат</span>
+          </div>
+          <div class="text-3xl font-black text-amber-600 tracking-tight font-mono" id="kpi-receivables">-- ₸</div>
+          <div class="flex items-center justify-between text-xs text-rose-600 mt-2.5 pt-2.5 border-t border-slate-100">
+            <span class="flex items-center gap-1 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+              Просрочено:
+            </span>
+            <span class="font-bold font-mono" id="kpi-overdue">-- ₸</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MID SECTION: DIRECTIONS BREAKDOWN & LIVE ALERTS -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- DIRECTIONS & SERVICES (5 COLS) -->
+        <div class="lg:col-span-5 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Прибыльность по направлениям</h3>
+                <p class="text-xs text-slate-500">Где бизнес зарабатывает максимум</p>
+              </div>
+              <span class="text-xs text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded">Live Real-time</span>
+            </div>
+
+            <!-- Direction Items Container -->
+            <div id="directions-container" class="space-y-3.5">
+              <!-- Dynamically populated from API -->
+            </div>
+          </div>
+
+          <div class="mt-4 p-3.5 rounded-xl bg-indigo-50 border border-indigo-200 text-xs">
+            <span class="font-bold text-indigo-900">💡 Системный инсайт:</span>
+            <p class="text-slate-700 text-[11px] mt-1 leading-relaxed">
+              AI-автоматизация имеет наименьший цикл согласований и наивысшую маржинальность благодаря переиспользованию готовых модулей n8n и Supabase.
+            </p>
+          </div>
+        </div>
+
+        <!-- LIVE PROFIT LEAKAGE ALERTS (7 COLS) -->
+        <div class="lg:col-span-7 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                <h3 class="text-sm font-bold text-slate-900">Детектор финансовых рисков и утечек</h3>
+              </div>
+              <span class="text-xs text-slate-500 font-mono">Авто-мониторинг</span>
+            </div>
+
+            <div id="alerts-container" class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+            <span>Алерты формируются на основе фактических часов и сроков оплат счетов.</span>
+            <button onclick="switchTab('projects')" class="text-indigo-600 font-bold hover:underline">
+              Перейти к проектам →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: CRM PIPELINE (KANBAN & AUTOMATED HANDOFF) -->
+    <section id="content-crm" class="hidden space-y-6">
+      <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-200">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Воронка продаж и автоматический Handoff в производство</h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Сквозной процесс: Лид → Контакт → Встреча → КП → Договор. Переводите сделку в «Won», чтобы за 1 клик создать проект.
+            </p>
+          </div>
+          <button onclick="openNewLeadModal()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5 self-start sm:self-auto">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span>Добавить Лид</span>
+          </button>
+        </div>
+
+        <!-- KANBAN BOARD STAGES -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3.5" id="kanban-board">
+          <!-- 1. Lead -->
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between min-h-[420px]">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
+                <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Новый Лид</span>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-white text-slate-700 font-bold border border-slate-200" id="count-stage-lead">0</span>
+              </div>
+              <div id="col-stage-lead" class="space-y-2.5"></div>
+            </div>
+          </div>
+
+          <!-- 2. Meeting -->
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between min-h-[420px]">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
+                <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">2. Встреча / Бриф</span>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-white text-slate-700 font-bold border border-slate-200" id="count-stage-meeting">0</span>
+              </div>
+              <div id="col-stage-meeting" class="space-y-2.5"></div>
+            </div>
+          </div>
+
+          <!-- 3. KP -->
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between min-h-[420px]">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
+                <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">3. КП / Смета</span>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-white text-slate-700 font-bold border border-slate-200" id="count-stage-kp">0</span>
+              </div>
+              <div id="col-stage-kp" class="space-y-2.5"></div>
+            </div>
+          </div>
+
+          <!-- 4. Contract -->
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between min-h-[420px]">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
+                <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">4. Договор</span>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-white text-slate-700 font-bold border border-slate-200" id="count-stage-contract">0</span>
+              </div>
+              <div id="col-stage-contract" class="space-y-2.5"></div>
+            </div>
+          </div>
+
+          <!-- 5. Won / Handoff -->
+          <div class="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col justify-between min-h-[420px]">
+            <div>
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-emerald-200">
+                <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">5. В производстве</span>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-white text-emerald-700 font-bold border border-emerald-200" id="count-stage-won">0</span>
+              </div>
+              <div id="col-stage-won" class="space-y-2.5"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PROJECTS REGISTRY & P&L -->
+    <section id="content-projects" class="hidden space-y-6">
+      <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-200">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Реестр проектов, часов и фактической себестоимости</h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Живой учет: логируйте часы специалистов, чтобы видеть влияние переработок на итоговую чистую прибыль.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="project-filter-input" oninput="renderProjectsTable()" placeholder="Поиск проекта..."
+              class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 w-48">
+            <button onclick="openNewProjectModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-xs transition">
+              + Проект
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs" id="projects-table">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-semibold">
+                <th class="pb-3">Проект / Клиент</th>
+                <th class="pb-3">Направление</th>
+                <th class="pb-3">Сумма договора</th>
+                <th class="pb-3">Часы (План / Факт)</th>
+                <th class="pb-3">Себестоимость</th>
+                <th class="pb-3">Чистая прибыль</th>
+                <th class="pb-3">Маржа %</th>
+                <th class="pb-3 text-right">Действия</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="projects-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: INVOICES & RECEIVABLES -->
+    <section id="content-invoices" class="hidden space-y-6">
+      <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-5 border-b border-slate-200">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Контроль счетов, оплат и дебиторской задолженности</h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Учет графика платежей, авансов и автоматическая фиксация кассовых разрывов.
+            </p>
+          </div>
+          <button onclick="openNewInvoiceModal()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-xs transition flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            <span>Выставить счет</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs" id="invoices-table">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-semibold">
+                <th class="pb-3">Номер счета</th>
+                <th class="pb-3">Клиент</th>
+                <th class="pb-3">Сумма</th>
+                <th class="pb-3">Срок оплаты</th>
+                <th class="pb-3">Дата оплаты</th>
+                <th class="pb-3">Статус</th>
+                <th class="pb-3 text-right">Действие</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100" id="invoices-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: AI PROPOSAL GENERATOR -->
+    <section id="content-ai-generator" class="hidden space-y-6">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
+              <h3 class="text-base font-bold text-slate-900">AI-Генератор Коммерческих Предложений и Смет</h3>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              Автоматический расчет часов, внутренней себестоимости и формирование готового КП по брифу клиента.
+            </p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-bold">
+            Algorithmic / AI Core
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">
+          
+          <!-- INPUT PROMPT -->
+          <div class="lg:col-span-5 space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">
+                Введите бриф или выберите готовый шаблон задачи:
+              </label>
+              <div class="flex flex-wrap gap-2 mb-3">
+                <button onclick="setBriefTemplate('chatbot')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
+                  🤖 AI Бот в Telegram
+                </button>
+                <button onclick="setBriefTemplate('n8n')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
+                  ⚡ n8n + AmoCRM + 1С
+                </button>
+                <button onclick="setBriefTemplate('erp')" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition border border-slate-200">
+                  🌐 B2B Портал / ERP
+                </button>
+              </div>
+              <textarea id="ai-brief-input" rows="5" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-indigo-600 leading-relaxed font-sans"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Целевая маржа</label>
+                <select id="ai-margin-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs text-slate-900 focus:outline-none">
+                  <option value="0.40">40% (Базовая)</option>
+                  <option value="0.50" selected>50% (Премиум / AI)</option>
+                  <option value="0.60">60% (Высокая маржа)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Срочность</label>
+                <select id="ai-speed-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs text-slate-900 focus:outline-none">
+                  <option value="1.0">Стандартный срок</option>
+                  <option value="1.25">Срочный спринт (+25%)</option>
+                </select>
+              </div>
+            </div>
+
+            <button onclick="generateAiProposal()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/20 transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              <span>Сформировать КП и рассчитать смету</span>
+            </button>
+          </div>
+
+          <!-- GENERATED OUTPUT -->
+          <div class="lg:col-span-7 p-5 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between" id="ai-output-box">
+            <div id="ai-proposal-content" class="text-xs text-slate-700 space-y-3">
+              <div class="p-8 text-center text-slate-400">
+                Выберите шаблон слева или введите описание задачи и нажмите «Сформировать КП».
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
+              <span class="text-[11px] text-slate-500">Автоматический расчет трудозатрат и маржинальности</span>
+              <button onclick="window.print()" class="px-3.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-medium transition">
+                Печать / Экспорт в PDF
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================================================== -->
+  <!-- MODALS -->
+  <!-- ==================================================== -->
+
+  <!-- MODAL: LOG TIME -->
+  <div id="modal-log-time" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-md w-full p-6">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <h4 class="font-bold text-sm text-slate-900" id="modal-log-title">Зафиксировать часы по проекту</h4>
+        <button onclick="closeModal('modal-log-time')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+
+      <input type="hidden" id="log-project-id">
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Специалист / Роль</label>
+          <select id="log-role" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+            <option value="ai">AI Automation / Vibe Coder (12 000 ₸/ч)</option>
+            <option value="dev">Backend & Integrator (14 000 ₸/ч)</option>
+            <option value="pm">Project Manager (9 000 ₸/ч)</option>
+            <option value="qa">UI/UX & QA (8 000 ₸/ч)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Отработано часов</label>
+            <input type="number" id="log-hours" value="8" min="0.5" step="0.5" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-slate-900">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Дата</label>
+            <input type="date" id="log-date" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Комментарий к задаче</label>
+          <input type="text" id="log-note" placeholder="Что сделано (напр. разработка webhook или фикс бага)" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-6 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-log-time')" class="px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">Отмена</button>
+        <button onclick="submitTimeLog()" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">Сохранить часы</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: NEW PROJECT -->
+  <div id="modal-new-project" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-lg w-full p-6">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <h4 class="font-bold text-sm text-slate-900">Добавить новый проект</h4>
+        <button onclick="closeModal('modal-new-project')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Название проекта</label>
+          <input type="text" id="new-prj-title" placeholder="напр. CRM + Telegram AI Bot" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Клиент / Компания</label>
+            <input type="text" id="new-prj-client" placeholder="напр. Almaty Auto Group" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Направление</label>
+            <select id="new-prj-direction" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+              <option value="ai">AI & Автоматизация</option>
+              <option value="web">Web & Low-code</option>
+              <option value="marketing">Performance Маркетинг</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Сумма договора, ₸</label>
+            <input type="number" id="new-prj-price" value="5000000" step="100000" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-slate-900">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Плановый лимит часов</label>
+            <input type="number" id="new-prj-hours" value="80" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-slate-900">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Подрядчики и серверы, ₸</label>
+            <input type="number" id="new-prj-direct-other" value="300000" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-slate-900">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Накладные расходы (Overhead %)</label>
+            <input type="number" id="new-prj-overhead" value="15" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-slate-900">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-6 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-new-project')" class="px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">Отмена</button>
+        <button onclick="submitNewProject()" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">Создать проект</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: NEW LEAD -->
+  <div id="modal-new-lead" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-md w-full p-6">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <h4 class="font-bold text-sm text-slate-900">Добавить новый лид в CRM</h4>
+        <button onclick="closeModal('modal-new-lead')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Название потребности</label>
+          <input type="text" id="new-lead-title" placeholder="напр. Автоматизация отдела продаж" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Компания</label>
+            <input type="text" id="new-lead-company" placeholder="напр. KazLogistics" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Контактное лицо</label>
+            <input type="text" id="new-lead-contact" placeholder="Айбек" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Телефон / WhatsApp</label>
+            <input type="text" id="new-lead-phone" placeholder="+7 701 ..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Плановый бюджет, ₸</label>
+            <input type="number" id="new-lead-budget" value="4500000" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-slate-900">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Направление</label>
+          <select id="new-lead-direction" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+            <option value="ai">AI & Автоматизация</option>
+            <option value="web">Web & Low-code</option>
+            <option value="marketing">Performance Маркетинг</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-6 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-new-lead')" class="px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">Отмена</button>
+        <button onclick="submitNewLead()" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">Сохранить лид</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: NEW INVOICE -->
+  <div id="modal-new-invoice" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-md w-full p-6">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <h4 class="font-bold text-sm text-slate-900">Выставить счет</h4>
+        <button onclick="closeModal('modal-new-invoice')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Привязать к проекту</label>
+          <select id="new-inv-project" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Сумма счета, ₸</label>
+          <input type="number" id="new-inv-amount" value="2500000" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-slate-900">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Срок оплаты (дедлайн)</label>
+          <input type="date" id="new-inv-due-date" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-slate-900">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-6 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-new-invoice')" class="px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">Отмена</button>
+        <button onclick="submitNewInvoice()" class="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold">Выставить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC (CONNECTED TO REST API) -->
+  <script>
+    let appData = {
+      dashboard: null,
+      projects: [],
+      leads: [],
+      invoices: []
+    };
+
+    function formatKZT(num) {
+      return Math.round(Number(num) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      const tabs = ['dashboard', 'crm', 'projects', 'invoices', 'ai-generator'];
+      tabs.forEach(t => {
+        const content = document.getElementById('content-' + t);
+        const btn = document.getElementById('tab-' + t);
+        if (content) {
+          if (t === tabId) content.classList.remove('hidden');
+          else content.classList.add('hidden');
+        }
+        if (btn) {
+          if (t === tabId) {
+            btn.className = "px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-white text-indigo-700 shadow-xs border border-slate-200";
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-lg font-medium transition-all text-slate-600 hover:text-slate-900";
+          }
+        }
+      });
+      if (tabId === 'crm') renderKanban();
+      if (tabId === 'projects') renderProjectsTable();
+      if (tabId === 'invoices') renderInvoicesTable();
+    }
+
+    // Modal helpers
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // ------------------------------------------------------------------
+    // API FETCHING & DATA REFRESH
+    // ------------------------------------------------------------------
+    async function loadAllData() {
+      try {
+        const [dashRes, projRes, leadsRes, invRes] = await Promise.all([
+          fetch('/api/dashboard').then(r => r.json()),
+          fetch('/api/projects').then(r => r.json()),
+          fetch('/api/leads').then(r => r.json()),
+          fetch('/api/invoices').then(r => r.json())
+        ]);
+
+        appData.dashboard = dashRes;
+        appData.projects = projRes;
+        appData.leads = leadsRes;
+        appData.invoices = invRes;
+
+        renderDashboard();
+      } catch (err) {
+        console.error("Failed to load API data:", err);
+      }
+    }
+
+    // Render Dashboard
+    function renderDashboard() {
+      if (!appData.dashboard) return;
+      const { kpi, directions, leakageAlerts } = appData.dashboard;
+
+      document.getElementById('kpi-revenue').innerText = formatKZT(kpi.totalRevenue);
+      document.getElementById('kpi-projects-count').innerText = `${kpi.totalProjectsCount} проектов`;
+      document.getElementById('kpi-active-projects').innerText = `${kpi.activeProjectsCount} в работе`;
+
+      document.getElementById('kpi-costs').innerText = formatKZT(kpi.totalCosts);
+      const costPct = kpi.totalRevenue > 0 ? (kpi.totalCosts / kpi.totalRevenue) * 100 : 0;
+      document.getElementById('kpi-cost-bar').style.width = Math.min(100, costPct) + '%';
+
+      document.getElementById('kpi-profit').innerText = formatKZT(kpi.netProfit);
+      document.getElementById('kpi-margin-badge').innerText = `Маржа ${kpi.avgMarginPercent}%`;
+      document.getElementById('kpi-margin-text').innerText = `${kpi.avgMarginPercent}%`;
+
+      document.getElementById('kpi-receivables').innerText = formatKZT(kpi.totalReceivables);
+      document.getElementById('kpi-overdue').innerText = formatKZT(kpi.overdueReceivables);
+
+      // Render Directions
+      const dirContainer = document.getElementById('directions-container');
+      dirContainer.innerHTML = directions.map(d => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="flex justify-between items-center text-xs mb-1.5">
+            <span class="text-slate-900 font-bold">${d.name} (${d.count})</span>
+            <span class="text-emerald-700 font-bold font-mono bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${d.margin}% маржа</span>
+          </div>
+          <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-1.5">
+            <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.min(100, d.margin)}%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-600">
+            <span>Выручка: ${formatKZT(d.revenue)}</span>
+            <span class="text-slate-900 font-semibold">Прибыль: ${formatKZT(d.profit)}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Alerts
+      const alertsContainer = document.getElementById('alerts-container');
+      if (leakageAlerts.length === 0) {
+        alertsContainer.innerHTML = `<div class="p-4 rounded-xl bg-emerald-50 text-emerald-800 text-xs border border-emerald-200">✅ Утечек не обнаружено. Все проекты в пределах лимитов сметы!</div>`;
+      } else {
+        alertsContainer.innerHTML = leakageAlerts.map(a => `
+          <div class="p-3 rounded-xl ${a.type === 'overrun' ? 'bg-rose-50 border border-rose-200' : 'bg-amber-50 border border-amber-200'} flex items-start gap-3">
+            <div class="mt-0.5 w-2 h-2 rounded-full ${a.type === 'overrun' ? 'bg-rose-500' : 'bg-amber-500'} shrink-0"></div>
+            <div class="text-xs">
+              <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                <span>${a.projectTitle}</span>
+                <span class="text-[10px] text-slate-500 font-normal">(${a.client})</span>
+              </div>
+              <p class="text-slate-700 text-[11px] mt-0.5">${a.message}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // ------------------------------------------------------------------
+    // CRM KANBAN & AUTOMATED HANDOFF
+    // ------------------------------------------------------------------
+    function renderKanban() {
+      const stages = ['lead', 'meeting', 'kp', 'contract', 'won'];
+      stages.forEach(s => {
+        const col = document.getElementById('col-stage-' + s);
+        const count = document.getElementById('count-stage-' + s);
+        const leadsInStage = appData.leads.filter(l => l.stage === s);
+        if (count) count.innerText = leadsInStage.length;
+
+        if (col) {
+          col.innerHTML = leadsInStage.map(l => `
+            <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-xs space-y-2">
+              <div class="flex items-start justify-between gap-1">
+                <span class="font-bold text-slate-900 text-xs">${l.title}</span>
+                <button onclick="deleteLead('${l.id}')" class="text-slate-300 hover:text-rose-500 text-xs">×</button>
+              </div>
+              <div class="text-[11px] text-slate-500">${l.company} • ${l.contactName || ''}</div>
+              <div class="text-xs font-mono font-bold text-indigo-700">${formatKZT(l.budget)}</div>
+              
+              <!-- Next Stage Action -->
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                <span class="text-slate-400 font-mono">${l.createdAt}</span>
+                ${s !== 'won' ? `
+                  <button onclick="advanceLeadStage('${l.id}', '${s}')" class="px-2 py-0.5 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold border border-indigo-200 transition">
+                    ${s === 'contract' ? '⚡ Handoff (Won)' : 'Далее →'}
+                  </button>
+                ` : `
+                  <span class="text-emerald-700 font-bold">✓ В проектах</span>
+                `}
+              </div>
+            </div>
+          `).join('');
+        }
+      });
+    }
+
+    async function advanceLeadStage(leadId, currentStage) {
+      const order = ['lead', 'meeting', 'kp', 'contract', 'won'];
+      const nextIdx = order.indexOf(currentStage) + 1;
+      if (nextIdx >= order.length) return;
+      const nextStage = order[nextIdx];
+
+      if (nextStage === 'won') {
+        if (!confirm("Запустить автоматический Handoff в производство? Будет создан проект, зафиксирован аванс 50% и созданы задачи.")) return;
+        const res = await fetch(`/api/leads/${leadId}/convert-to-project`, { method: 'POST' }).then(r => r.json());
+        alert(res.message);
+        await loadAllData();
+        renderKanban();
+        return;
+      }
+
+      await fetch(`/api/leads/${leadId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage: nextStage })
+      });
+      await loadAllData();
+      renderKanban();
+    }
+
+    async function deleteLead(id) {
+      if (!confirm("Удалить лид?")) return;
+      await fetch(`/api/leads/${id}`, { method: 'DELETE' });
+      await loadAllData();
+      renderKanban();
+    }
+
+    function openNewLeadModal() { openModal('modal-new-lead'); }
+    async function submitNewLead() {
+      const body = {
+        title: document.getElementById('new-lead-title').value,
+        company: document.getElementById('new-lead-company').value,
+        contactName: document.getElementById('new-lead-contact').value,
+        phone: document.getElementById('new-lead-phone').value,
+        budget: Number(document.getElementById('new-lead-budget').value),
+        direction: document.getElementById('new-lead-direction').value,
+        stage: 'lead'
+      };
+      await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      closeModal('modal-new-lead');
+      await loadAllData();
+      renderKanban();
+    }
+
+    // ------------------------------------------------------------------
+    // PROJECTS & TIMELOG TABLE
+    // ------------------------------------------------------------------
+    function renderProjectsTable() {
+      const q = (document.getElementById('project-filter-input').value || '').toLowerCase();
+      const tbody = document.getElementById('projects-table-body');
+      const filtered = appData.projects.filter(p => p.title.toLowerCase().includes(q) || p.client.toLowerCase().includes(q));
+
+      tbody.innerHTML = filtered.map(p => {
+        const fin = p.financials || {};
+        const isOverrun = fin.hourOverrunPercent > 10;
+        return `
+          <tr class="hover:bg-slate-50 transition ${isOverrun ? 'bg-rose-50/20' : ''}">
+            <td class="py-3.5">
+              <div class="font-bold text-slate-900">${p.title}</div>
+              <span class="text-[11px] text-slate-500">${p.client}</span>
+            </td>
+            <td class="py-3.5">
+              <span class="px-2 py-0.5 rounded text-[11px] font-semibold ${p.direction === 'ai' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-700'}">
+                ${p.direction === 'ai' ? 'AI / Automation' : (p.direction === 'web' ? 'Web Low-code' : 'Marketing')}
+              </span>
+            </td>
+            <td class="py-3.5 font-mono text-slate-900 font-semibold">${formatKZT(p.price)}</td>
+            <td class="py-3.5">
+              <div class="font-mono text-slate-700 font-medium">
+                ${p.planHours}ч / <span class="${isOverrun ? 'text-rose-600 font-bold' : 'text-slate-900 font-bold'}">${fin.totalHours}ч</span>
+              </div>
+              ${isOverrun ? `<span class="text-[10px] text-rose-600 font-bold">+${fin.hourOverrunPercent}% превышение</span>` : `<span class="text-[10px] text-slate-400">В графике</span>`}
+            </td>
+            <td class="py-3.5 font-mono text-slate-700">${formatKZT(fin.totalCost)}</td>
+            <td class="py-3.5 font-mono font-bold ${fin.netProfit < 0 ? 'text-rose-600' : 'text-emerald-600'}">
+              ${formatKZT(fin.netProfit)}
+            </td>
+            <td class="py-3.5">
+              <span class="px-2 py-0.5 rounded font-mono font-bold text-xs ${fin.marginPercent < 25 ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
+                ${fin.marginPercent}%
+              </span>
+            </td>
+            <td class="py-3.5 text-right space-x-1.5">
+              <button onclick="openLogTimeModal('${p.id}', '${p.title}')" class="px-2.5 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs border border-indigo-200 transition">
+                + Часы
+              </button>
+              <button onclick="deleteProject('${p.id}')" class="px-2 py-1 rounded-md text-slate-400 hover:text-rose-600 transition">
+                🗑
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openLogTimeModal(projectId, projectTitle) {
+      document.getElementById('log-project-id').value = projectId;
+      document.getElementById('modal-log-title').innerText = `Зафиксировать часы: ${projectTitle}`;
+      document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+      openModal('modal-log-time');
+    }
+
+    async function submitTimeLog() {
+      const projectId = document.getElementById('log-project-id').value;
+      const body = {
+        role: document.getElementById('log-role').value,
+        hours: Number(document.getElementById('log-hours').value),
+        date: document.getElementById('log-date').value,
+        note: document.getElementById('log-note').value
+      };
+
+      await fetch(`/api/projects/${projectId}/timelogs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      closeModal('modal-log-time');
+      await loadAllData();
+      renderProjectsTable();
+    }
+
+    function openNewProjectModal() { openModal('modal-new-project'); }
+    async function submitNewProject() {
+      const body = {
+        title: document.getElementById('new-prj-title').value,
+        client: document.getElementById('new-prj-client').value,
+        direction: document.getElementById('new-prj-direction').value,
+        price: Number(document.getElementById('new-prj-price').value),
+        planHours: Number(document.getElementById('new-prj-hours').value),
+        directOtherCosts: Number(document.getElementById('new-prj-direct-other').value),
+        overheadPercent: Number(document.getElementById('new-prj-overhead').value)
+      };
+
+      await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      closeModal('modal-new-project');
+      await loadAllData();
+      renderProjectsTable();
+    }
+
+    async function deleteProject(id) {
+      if (!confirm("Удалить проект из реестра?")) return;
+      await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      await loadAllData();
+      renderProjectsTable();
+    }
+
+    // ------------------------------------------------------------------
+    // INVOICES & RECEIVABLES
+    // ------------------------------------------------------------------
+    function renderInvoicesTable() {
+      const tbody = document.getElementById('invoices-table-body');
+      tbody.innerHTML = appData.invoices.map(inv => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="py-3 font-mono font-bold text-slate-900">${inv.number}</td>
+          <td class="py-3 text-slate-800">${inv.client}</td>
+          <td class="py-3 font-mono font-bold text-slate-900">${formatKZT(inv.amount)}</td>
+          <td class="py-3 font-mono text-slate-500">${inv.dueDate}</td>
+          <td class="py-3 font-mono text-slate-500">${inv.paidDate || '—'}</td>
+          <td class="py-3">
+            <span class="px-2 py-0.5 rounded text-[11px] font-bold ${
+              inv.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+              (inv.status === 'overdue' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-amber-50 text-amber-800 border border-amber-200')
+            }">
+              ${inv.status === 'paid' ? 'Оплачен' : (inv.status === 'overdue' ? 'Просрочен!' : 'Ожидает')}
+            </span>
+          </td>
+          <td class="py-3 text-right">
+            ${inv.status !== 'paid' ? `
+              <button onclick="payInvoice('${inv.id}')" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition">
+                ✓ Оплачен
+              </button>
+            ` : `<span class="text-emerald-700 font-medium">Закрыт</span>`}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function payInvoice(id) {
+      await fetch(`/api/invoices/${id}/pay`, { method: 'PUT' });
+      await loadAllData();
+      renderInvoicesTable();
+    }
+
+    function openNewInvoiceModal() {
+      const select = document.getElementById('new-inv-project');
+      select.innerHTML = appData.projects.map(p => `<option value="${p.id}" data-client="${p.client}">${p.title} (${p.client})</option>`).join('');
+      document.getElementById('new-inv-due-date').value = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
+      openModal('modal-new-invoice');
+    }
+
+    async function submitNewInvoice() {
+      const select = document.getElementById('new-inv-project');
+      const selectedOpt = select.options[select.selectedIndex];
+      const body = {
+        projectId: select.value,
+        client: selectedOpt ? selectedOpt.getAttribute('data-client') : "Клиент",
+        amount: Number(document.getElementById('new-inv-amount').value),
+        dueDate: document.getElementById('new-inv-due-date').value
+      };
+
+      await fetch('/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      closeModal('modal-new-invoice');
+      await loadAllData();
+      renderInvoicesTable();
+    }
+
+    // ------------------------------------------------------------------
+    // AI PROPOSAL GENERATOR
+    // ------------------------------------------------------------------
+    const briefTemplates = {
+      chatbot: "Разработка многоканального AI-ассистента для отдела продаж (Telegram + WhatsApp). Задачи: интеграция с базой знаний компании, квалификация лида по скоринг-модели, авто-запись на встречу в Google Calendar и фиксация сделки в AmoCRM.",
+      n8n: "Построение сквозной автоматизации на n8n: AmoCRM ↔ ClickUp ↔ 1С/МойСклад. Автоматическое выставление счетов, контроль подписания договоров через СМС/ЭЦП, авто-передача оплаченных сделок в проектный отдел.",
+      erp: "Разработка внутреннего B2B-портала для дилеров на Retool/Next.js + Supabase. Личный кабинет с каталогом, балансом дебиторской задолженности, историей отгрузок и генерацией актов сверки."
+    };
+
+    function setBriefTemplate(key) {
+      document.getElementById('ai-brief-input').value = briefTemplates[key];
+      generateAiProposal();
+    }
+
+    async function generateAiProposal() {
+      const brief = document.getElementById('ai-brief-input').value;
+      if (!brief) return;
+      const margin = document.getElementById('ai-margin-select').value;
+      const speedMultiplier = document.getElementById('ai-speed-select').value;
+
+      const res = await fetch('/api/ai/generate-kp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ brief, margin, speedMultiplier })
+      }).then(r => r.json());
+
+      const content = document.getElementById('ai-proposal-content');
+      content.innerHTML = `
+        <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-2">
+          <div class="font-bold text-sm text-slate-900">${res.title}</div>
+          <p class="text-slate-600 text-[11px] leading-relaxed">${res.summary}</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+            <span class="text-[10px] text-slate-500 font-medium">Стоимость для клиента</span>
+            <div class="text-slate-900 font-bold font-mono text-sm mt-0.5">${formatKZT(res.financials.clientPrice)}</div>
+          </div>
+          <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+            <span class="text-[10px] text-slate-500 font-medium">Плановые часы команды</span>
+            <div class="text-indigo-600 font-bold font-mono text-sm mt-0.5">${res.financials.totalHours} ч</div>
+          </div>
+          <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
+            <span class="text-[10px] text-slate-500 font-medium">Плановая маржа</span>
+            <div class="text-emerald-700 font-bold font-mono text-sm mt-0.5">${res.financials.marginPercent}%</div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+          <div class="text-slate-900 font-bold text-xs mb-2">Этапы реализации проекта:</div>
+          <div class="space-y-1.5 text-[11px]">
+            ${res.phases.map((ph, idx) => `
+              <div class="flex items-center justify-between text-slate-700">
+                <span>${ph.name}</span>
+                <span class="font-mono text-slate-500">${ph.duration}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800 font-medium">
+          ✅ Условия: ${res.terms}
+        </div>
+      `;
+    }
+
+    // Init on startup
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAllData();
+      setBriefTemplate('chatbot');
+    });
+  </script>
+</body>
+</html>

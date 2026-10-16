@@ -1,0 +1,24 @@
+{
+  "name": "smart-digital-ops-core",
+  "version": "1.0.0",
+  "description": "Smart Digital Group - Сквозная система автоматизации и учета прибыли",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "ai-automation",
+    "vibe-coding",
+    "profit-intelligence",
+    "crm",
+    "pnl"
+  ],
+  "author": "Smart Digital Group",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
