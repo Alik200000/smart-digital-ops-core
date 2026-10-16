@@ -2,6 +2,9 @@
 
 Полная сквозная система автоматизации внутренних процессов и финансово-управленческого учета компании **Smart Digital Group**.
 
+🌐 **Живое демо (Production Live):** [https://smart-digital-ops-core.onrender.com](https://smart-digital-ops-core.onrender.com)  
+📂 **GitHub репозиторий:** [https://github.com/Alik200000/smart-digital-ops-core](https://github.com/Alik200000/smart-digital-ops-core)
+
 Разработано для позиции **Vibe Coder / AI Automation Developer**.
 
 ---
